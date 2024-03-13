@@ -39,7 +39,7 @@
 | <a name="input_public_subnet_netmask"></a> [public\_subnet\_netmask](#input\_public\_subnet\_netmask) | The netmask for the public subnets | `string` | `""` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to all resources | `map(string)` | n/a | yes |
 | <a name="input_transit_gateway_id"></a> [transit\_gateway\_id](#input\_transit\_gateway\_id) | If enabled, and not lookup is disabled, the transit gateway id to connect to | `string` | `""` | no |
-| <a name="input_transit_gateway_route"></a> [transit\_gateway\_route](#input\_transit\_gateway\_route) | If enabled, and not lookup is disabled, the transit gateway default routes to add | `list(string)` | `[]` | no |
+| <a name="input_transit_gateway_routes"></a> [transit\_gateway\_routes](#input\_transit\_gateway\_routes) | If enabled, this is the cidr block to route down the transit gateway | `map(string)` | <pre>{<br>  "private": "10.0.0.0/8"<br>}</pre> | no |
 | <a name="input_vpc_netmask"></a> [vpc\_netmask](#input\_vpc\_netmask) | An optional range assigned to the VPC | `number` | `0` | no |
 
 ## Outputs
