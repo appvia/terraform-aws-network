@@ -83,10 +83,12 @@ variable "transit_gateway_id" {
   default     = ""
 }
 
-variable "transit_gateway_route" {
-  description = "If enabled, and not lookup is disabled, the transit gateway default routes to add"
-  type        = list(string)
-  default     = []
+variable "transit_gateway_routes" {
+  description = "If enabled, this is the cidr block to route down the transit gateway"
+  type        = map(string)
+  default = {
+    "private" = "10.0.0.0/8"
+  }
 }
 
 variable "vpc_netmask" {

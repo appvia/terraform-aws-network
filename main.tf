@@ -10,9 +10,7 @@ locals {
   transit_gateway_id = var.enable_transit_gateway ? var.transit_gateway_id : null
 
   # Is the routes to propagate down the transit gateway 
-  transit_routes = var.enable_transit_gateway && length(var.transit_gateway_route) > 0 ? {
-    private = var.transit_gateway_route
-  } : null
+  transit_routes = var.enable_transit_gateway && length(var.transit_gateway_routes) > 0 ? var.transit_gateway_routes : null
 
   # The configuration for the private subnets
   private_subnet = {
