@@ -1,0 +1,12 @@
+---
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    uses: appvia/appvia-cicd-workflows/.github/workflows/terraform-module-release.yml@main
+    name: GitHub Release
