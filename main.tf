@@ -3,9 +3,6 @@
 #
 
 locals {
-  # Is the IPAM pool id
-  ipam_pool_id = var.enable_ipam ? data.aws_vpc_ipam_pool.current[0].id : null
-
   # The id for the transit_gateway_id passed into the module
   transit_gateway_id = var.enable_transit_gateway ? var.transit_gateway_id : null
 
@@ -31,6 +28,9 @@ locals {
     }
   } : null
 
+  discovered_ipam_pool_id = var.enable_ipam && var.ipam_pool_id == "" ? data.aws_vpc_ipam_pool.current[0].id : null
+  # We use the discovered IPAM pool id if the user has not provided one
+  ipam_pool_id = var.enable_ipam ? coalesce(var.ipam_pool_id, local.discovered_ipam_pool_id) : null
 
   # Configuration for the transit subnets 
   transit_subnet = var.enable_transit_gateway ? {
@@ -65,7 +65,7 @@ locals {
 ## Lookup the IPAM by protocol
 #
 data "aws_vpc_ipam_pool" "current" {
-  count = var.enable_ipam ? 1 : 0
+  count = var.enable_ipam && var.ipam_pool_id == "" ? 1 : 0
 
   filter {
     name   = "address-family"
