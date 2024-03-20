@@ -58,7 +58,6 @@ variable "nat_gateway_mode" {
 variable "private_subnet_netmask" {
   description = "The netmask for the private subnets"
   type        = number
-  default     = 17
 
   validation {
     condition     = var.private_subnet_netmask > 0 && var.private_subnet_netmask <= 28
@@ -94,5 +93,4 @@ variable "transit_gateway_routes" {
 variable "vpc_netmask" {
   description = "An optional range assigned to the VPC"
   type        = number
-  default     = 0
 }
