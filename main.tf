@@ -123,6 +123,7 @@ resource "aws_vpc_endpoint" "vpe_endpoints" {
   security_group_ids  = [module.private_links[0].security_group_id]
   service_name        = "com.amazonaws.${data.aws_region.current.name}.${each.value}"
   subnet_ids          = local.private_subnet_ids
+  tags                = merge(var.tags, { Name = "vpe-${each.value}-${var.name}" })
   vpc_endpoint_type   = "Interface"
   vpc_id              = module.vpc.vpc_attributes.id
 }
