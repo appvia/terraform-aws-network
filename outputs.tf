@@ -17,12 +17,17 @@ output "public_subnet_netmask" {
   value       = var.public_subnet_netmask
 }
 
-output "private_subnet_cidrs" {
+output "private_subnet_list" {
   description = "A list of the CIDRs for the private subnets"
   value       = local.private_subnet_cidrs
 }
 
-output "public_subnet_cidrs" {
+output "private_subnet_cidrs" {
+  description = "A map of the CIDRs for the private subnets"
+  value       = local.private_subnet_cidr_map
+}
+
+output "public_subnet_list" {
   description = "A list of the CIDRs for the public subnets"
   value       = local.public_subnet_cidrs
 }
