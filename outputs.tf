@@ -17,6 +17,16 @@ output "public_subnet_netmask" {
   value       = var.public_subnet_netmask
 }
 
+output "private_subnet_cidrs" {
+  description = "A list of the CIDRs for the private subnets"
+  value       = local.private_subnet_cidrs
+}
+
+output "public_subnet_cidrs" {
+  description = "A list of the CIDRs for the public subnets"
+  value       = local.public_subnet_cidrs
+}
+
 output "private_subnet_attributes_by_az" {
   description = "The attributes of the private subnets"
   value       = module.vpc.private_subnet_attributes_by_az

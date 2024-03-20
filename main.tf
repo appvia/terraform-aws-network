@@ -45,6 +45,11 @@ locals {
     }
   } : null
 
+  # private subnet ranges 
+  private_subnet_cidrs = [for k, x in module.vpc.private_subnet_attributes_by_az : x.cidr_block if startswith(k, "private/")]
+  # public_subnet ranges 
+  public_subnet_cidrs = [for k, x in module.vpc.public_subnet_attributes_by_az : x.cidr_block]
+
   # The subnet id for the private subnets
   private_subnet_ids = [for k, x in module.vpc.private_subnet_attributes_by_az : x.id if startswith(k, "private/")]
   # The subnet id for the public subnets
