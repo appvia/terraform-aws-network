@@ -17,6 +17,31 @@ output "public_subnet_netmask" {
   value       = var.public_subnet_netmask
 }
 
+output "private_subnet_attributes_by_az" {
+  description = "The attributes of the private subnets"
+  value       = module.vpc.private_subnet_attributes_by_az
+}
+
+output "public_subnet_attributes_by_az" {
+  description = "The attributes of the public subnets"
+  value       = var.public_subnet_netmask > 0 ? module.vpc.public_subnet_attributes_by_az : null
+}
+
+output "transit_subnet_attributes_by_az" {
+  description = "The attributes of the transit gateway subnets"
+  value       = var.enable_transit_gateway ? module.vpc.tgw_subnet_attributes_by_az : null
+}
+
+output "natgw_id_per_az" {
+  description = "The IDs of the NAT Gateways"
+  value       = var.enable_nat_gateway ? module.vpc.natgw_id_per_az : null
+}
+
+output "rt_attributes_by_type_by_az" {
+  description = "The attributes of the route tables"
+  value       = module.vpc.rt_attributes_by_type_by_az
+}
+
 output "private_subnet_ids" {
   description = "The IDs of the private subnets"
   value       = local.private_subnet_ids
