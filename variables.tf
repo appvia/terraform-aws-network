@@ -34,6 +34,12 @@ variable "enable_transit_gateway_appliance_mode" {
   default     = false
 }
 
+variable "enable_private_endpoints" {
+  description = "Indicates the network should provision private endpoints"
+  type        = list(string)
+  default     = []
+}
+
 variable "name" {
   description = "Is the name of the network to provision"
   type        = string

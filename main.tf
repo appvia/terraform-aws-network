@@ -2,6 +2,9 @@
 ## Provisions a network within an account
 #
 
+# Get the current region 
+data "aws_region" "current" {}
+
 locals {
   # The id for the transit_gateway_id passed into the module
   transit_gateway_id = var.enable_transit_gateway ? var.transit_gateway_id : null
@@ -98,3 +101,28 @@ module "vpc" {
   transit_gateway_routes  = local.transit_routes
   subnets                 = local.subnets
 }
+
+module "private_links" {
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "5.1.2"
+  count   = length(var.enable_private_endpoints) > 0 ? 1 : 0
+
+  description         = "Provides the security groups for the private links access"
+  ingress_rules       = ["https-443-tcp", "http-80-tcp"]
+  ingress_cidr_blocks = local.private_subnet_cidrs
+  name                = "private-links-${var.name}"
+  vpc_id              = module.vpc.vpc_attributes.id
+}
+
+#
+## Provision any private endpoints
+resource "aws_vpc_endpoint" "vpe_endpoints" {
+  for_each = toset(var.enable_private_endpoints)
+
+  private_dns_enabled = true
+  security_group_ids  = [module.private_links[0].security_group_id]
+  service_name        = "com.amazonaws.${data.aws_region.current.name}.${each.value}"
+  vpc_endpoint_type   = "Interface"
+  vpc_id              = module.vpc.vpc_attributes.id
+}
+
