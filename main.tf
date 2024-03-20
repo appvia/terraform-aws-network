@@ -22,7 +22,7 @@ locals {
   }
 
   # Public subnets are optional
-  public_subnet = length(var.public_subnet_netmask) > 0 ? {
+  public_subnet = var.public_subnet_netmask > 0 ? {
     public = {
       connect_to_public_natgw   = var.enable_nat_gateway ? true : null
       nat_gateway_configuration = var.nat_gateway_mode

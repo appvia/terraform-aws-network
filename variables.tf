@@ -68,8 +68,8 @@ variable "private_subnet_netmask" {
 
 variable "public_subnet_netmask" {
   description = "The netmask for the public subnets"
-  type        = string
-  default     = ""
+  type        = number
+  default     = 0
 }
 
 variable "tags" {
