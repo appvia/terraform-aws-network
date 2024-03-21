@@ -10,18 +10,6 @@ variable "enable_ipam" {
   default     = true
 }
 
-variable "ipam_pool_id" {
-  description = "An optional pool id to use for IPAM pool to use"
-  type        = string
-  default     = ""
-}
-
-variable "ipam_pool_name" {
-  description = "An optional pool name to use for IPAM pool to use"
-  type        = string
-  default     = ""
-}
-
 variable "enable_nat_gateway" {
   description = "Indicates the network should provison nat gateways"
   type        = bool
@@ -44,6 +32,24 @@ variable "enable_private_endpoints" {
   description = "Indicates the network should provision private endpoints"
   type        = list(string)
   default     = []
+}
+
+variable "enable_ssm" {
+  description = "Indicates we should provision SSM private endpoints"
+  type        = bool
+  default     = false
+}
+
+variable "ipam_pool_name" {
+  description = "An optional pool name to use for IPAM pool to use"
+  type        = string
+  default     = ""
+}
+
+variable "ipam_pool_id" {
+  description = "An optional pool id to use for IPAM pool to use"
+  type        = string
+  default     = ""
 }
 
 variable "name" {

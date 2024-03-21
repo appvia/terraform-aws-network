@@ -70,6 +70,11 @@ locals {
     local.public_subnet,
     local.transit_subnet,
   )
+
+  # A list of the private endpoints to enable ssm
+  ssm_endpoints = var.enable_ssm ? ["ssmmessages", "ssm", "ec2messages"] : []
+  # enabled_endpotints is a list of all the private endpoints to enable 
+  enabled_endpoints = concat(var.enable_private_endpoints, local.ssm_endpoints)
 }
 
 #
@@ -117,7 +122,7 @@ module "vpc" {
 module "private_links" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.1.2"
-  count   = length(var.enable_private_endpoints) > 0 ? 1 : 0
+  count   = length(local.enabled_endpoints) > 0 ? 1 : 0
 
   description         = "Provides the security groups for the private links access"
   ingress_rules       = ["https-443-tcp", "http-80-tcp"]
@@ -129,7 +134,7 @@ module "private_links" {
 #
 ## Provision any private endpoints
 resource "aws_vpc_endpoint" "vpe_endpoints" {
-  for_each = toset(var.enable_private_endpoints)
+  for_each = toset(local.enabled_endpoints)
 
   private_dns_enabled = true
   security_group_ids  = [module.private_links[0].security_group_id]
