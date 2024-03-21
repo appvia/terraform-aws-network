@@ -16,6 +16,12 @@ variable "ipam_pool_id" {
   default     = ""
 }
 
+variable "ipam_pool_name" {
+  description = "An optional pool name to use for IPAM pool to use"
+  type        = string
+  default     = ""
+}
+
 variable "enable_nat_gateway" {
   description = "Indicates the network should provison nat gateways"
   type        = bool
