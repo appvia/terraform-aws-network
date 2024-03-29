@@ -72,7 +72,6 @@ variable "nat_gateway_mode" {
   type        = string
   default     = "none"
 
-  # Must be none, all_az, or single_az 
   validation {
     condition     = can(regex("^(none|all_az|single_az)$", var.nat_gateway_mode))
     error_message = "nat_gateway_mode must be non, all_az, or single_az"
@@ -114,7 +113,20 @@ variable "transit_gateway_routes" {
   }
 }
 
+variable "vpc_cidr" {
+  description = "An optional cidr block to assign to the VPC (if not using IPAM)"
+  type        = string
+  default     = null
+}
+
 variable "vpc_netmask" {
   description = "An optional range assigned to the VPC"
   type        = number
+  default     = null
+}
+
+variable "vpc_instance_tenancy" {
+  description = "The name of the VPC to create"
+  type        = string
+  default     = "default"
 }
