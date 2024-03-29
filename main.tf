@@ -109,14 +109,18 @@ module "vpc" {
   source  = "aws-ia/vpc/aws"
   version = "= 4.4.2"
 
-  name                    = var.name
-  az_count                = var.availability_zones
-  tags                    = var.tags
-  vpc_ipv4_ipam_pool_id   = local.ipam_pool_id
-  vpc_ipv4_netmask_length = var.vpc_netmask
-  transit_gateway_id      = local.transit_gateway_id
-  transit_gateway_routes  = local.transit_routes
-  subnets                 = local.subnets
+  name                     = var.name
+  az_count                 = var.availability_zones
+  cidr_block               = var.vpc_cidr
+  subnets                  = local.subnets
+  tags                     = var.tags
+  transit_gateway_id       = local.transit_gateway_id
+  transit_gateway_routes   = local.transit_routes
+  vpc_instance_tenancy     = var.vpc_instance_tenancy
+  vpc_enable_dns_hostnames = true
+  vpc_enable_dns_support   = true
+  vpc_ipv4_ipam_pool_id    = local.ipam_pool_id
+  vpc_ipv4_netmask_length  = var.vpc_netmask
 }
 
 module "private_links" {

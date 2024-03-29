@@ -1,3 +1,47 @@
+![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
+
+# Terraform AWS Network
+
+## Description
+
+The purpose of this module is to provide a consistent way to provision a VPC and associated resources in AWS.
+
+## Usage
+
+Add example usage here
+
+```hcl
+module "vpc" {
+  source  = "appvia/network/aws"
+  version = "0.0.8"
+
+  availability_zones                    = var.availability_zones
+  enable_ipam                           = var.enable_ipam
+  enable_ssm                            = var.enable_ssm
+  enable_transit_gateway                = var.enable_transit_gateway
+  enable_transit_gateway_appliance_mode = true
+  ipam_pool_id                          = data.aws_vpc_ipam_pool.current.id
+  name                                  = var.name
+  private_subnet_netmask                = var.private_subnet_netmask
+  pulic_subnet_netmask                  = var.public_subnet_netmask
+  tags                                  = var.tags
+  transit_gateway_id                    = data.aws_ec2_transit_gateway.this.id
+  vpc_cidr                              = var.vpc_cidr
+
+  transit_gateway_rotues = {
+    private = aws_ec2_managed_prefix_list.internal.id
+  }
+}
+```
+
+## Update Documentation
+
+The `terraform-docs` utility is used to generate this README. Follow the below steps to update:
+
+1. Make changes to the `.terraform-docs.yml` file
+2. Fetch the `terraform-docs` binary (https://terraform-docs.io/user-guide/installation/)
+3. Run `terraform-docs markdown table --output-file ${PWD}/README.md --output-mode inject .`
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -47,7 +91,9 @@
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to all resources | `map(string)` | n/a | yes |
 | <a name="input_transit_gateway_id"></a> [transit\_gateway\_id](#input\_transit\_gateway\_id) | If enabled, and not lookup is disabled, the transit gateway id to connect to | `string` | `""` | no |
 | <a name="input_transit_gateway_routes"></a> [transit\_gateway\_routes](#input\_transit\_gateway\_routes) | If enabled, this is the cidr block to route down the transit gateway | `map(string)` | <pre>{<br>  "private": "10.0.0.0/8"<br>}</pre> | no |
-| <a name="input_vpc_netmask"></a> [vpc\_netmask](#input\_vpc\_netmask) | An optional range assigned to the VPC | `number` | n/a | yes |
+| <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | An optional cidr block to assign to the VPC (if not using IPAM) | `string` | `null` | no |
+| <a name="input_vpc_instance_tenancy"></a> [vpc\_instance\_tenancy](#input\_vpc\_instance\_tenancy) | The name of the VPC to create | `string` | `"default"` | no |
+| <a name="input_vpc_netmask"></a> [vpc\_netmask](#input\_vpc\_netmask) | An optional range assigned to the VPC | `number` | `null` | no |
 
 ## Outputs
 
