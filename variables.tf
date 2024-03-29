@@ -4,6 +4,12 @@ variable "availability_zones" {
   default     = 2
 }
 
+variable "additional_subnets" {
+  description = "Additional subnets to create in the network"
+  type        = map(any)
+  default     = null
+}
+
 variable "enable_ipam" {
   description = "Indicates the cidr block for the network should be assigned from IPAM"
   type        = bool
