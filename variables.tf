@@ -85,8 +85,8 @@ variable "nat_gateway_mode" {
   default     = "none"
 
   validation {
-    condition     = can(regex("^(none|all_az|single_az)$", var.nat_gateway_mode))
-    error_message = "nat_gateway_mode must be non, all_az, or single_az"
+    condition     = can(regex("^(none|all_azs|single_az)$", var.nat_gateway_mode))
+    error_message = "nat_gateway_mode must be non, all_azs, or single_az"
   }
 }
 
