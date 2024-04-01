@@ -31,7 +31,7 @@ locals {
   # Configuration for the transit subnets 
   transit_subnet = var.enable_transit_gateway ? {
     transit_gateway = {
-      connect_to_public_natgw                         = false
+      connect_to_public_natgw                         = var.enable_transit_gateway_subnet_natgw
       netmask                                         = 28
       tags                                            = var.tags
       transit_gateway_appliance_mode_support          = var.enable_transit_gateway_appliance_mode ? "enable" : "disable"
