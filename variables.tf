@@ -28,6 +28,12 @@ variable "enable_transit_gateway" {
   default     = false
 }
 
+variable "enable_transit_gateway_subnet_natgw" {
+  description = "Indicates if the transit gateway subnets should be connected to a nat gateway"
+  type        = bool
+  default     = false
+}
+
 variable "enable_transit_gateway_appliance_mode" {
   description = "Indicates the network should be connected to a transit gateway in appliance mode"
   type        = bool
