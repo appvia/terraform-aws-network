@@ -60,6 +60,7 @@ module "private_links" {
   ingress_rules       = ["https-443-tcp", "http-80-tcp"]
   ingress_cidr_blocks = local.private_subnet_cidrs
   name                = "private-links-${var.name}"
+  tags                = var.tags
   vpc_id              = module.vpc.vpc_attributes.id
 }
 
