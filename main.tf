@@ -1,13 +1,13 @@
-#
-## Provisions a network within an account
-#
-
 # Get the current region 
 data "aws_region" "current" {}
 
-#
+## Find any forwarding rules which have been shared to us 
+data "aws_route53_resolver_rules" "current" {
+  rule_type    = "FORWARD"
+  share_status = "SHARED_WITH_ME"
+}
+
 ## Lookup the IPAM by protocol
-#
 data "aws_vpc_ipam_pool" "current" {
   count = var.enable_ipam ? 1 : 0
 
@@ -30,9 +30,7 @@ data "aws_vpc_ipam_pool" "current" {
   }
 }
 
-#
 ## Provision the VPC for VPN
-#
 module "vpc" {
   source  = "aws-ia/vpc/aws"
   version = "= 4.4.2"
@@ -51,6 +49,15 @@ module "vpc" {
   vpc_ipv4_netmask_length  = var.vpc_netmask
 }
 
+## Associate any resolver rules with the vpc if required 
+resource "aws_route53_resolver_rule_association" "vpc_associations" {
+  for_each = var.enable_route53_resolver_rules ? local.resolver_rules : {}
+
+  resolver_rule_id = each.value
+  vpc_id           = module.vpc.vpc_attributes.id
+}
+
+## Provision the security groups for the private links 
 module "private_links" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.1.2"
@@ -64,7 +71,6 @@ module "private_links" {
   vpc_id              = module.vpc.vpc_attributes.id
 }
 
-#
 ## Provision any private endpoints
 resource "aws_vpc_endpoint" "vpe_endpoints" {
   for_each = toset(local.enabled_endpoints)

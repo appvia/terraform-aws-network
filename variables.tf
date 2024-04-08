@@ -16,6 +16,18 @@ variable "enable_ipam" {
   default     = true
 }
 
+variable "enable_route53_resolver_rules" {
+  description = "Automatically associates any shared route53 resolver rules with the VPC"
+  type        = bool
+  default     = true
+}
+
+variable "exclude_resolver_rules" {
+  description = "List of resolver rules to exclude from association"
+  type        = list(string)
+  default     = []
+}
+
 variable "enable_nat_gateway" {
   description = "Indicates the network should provison nat gateways"
   type        = bool

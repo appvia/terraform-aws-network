@@ -71,5 +71,7 @@ locals {
   ssm_endpoints = var.enable_ssm ? ["ssmmessages", "ssm", "ec2messages"] : []
   # enabled_endpotints is a list of all the private endpoints to enable 
   enabled_endpoints = concat(var.enable_private_endpoints, local.ssm_endpoints)
+  ## Build the list of resolver rules to associate with the vpc 
+  resolver_rules = var.enable_route53_resolver_rules ? [for id in data.aws_route53_resolver_rules.current.resolver_rule_ids : id if !contains(var.exclude_resolver_rules, id)] : []
 }
 
