@@ -24,7 +24,7 @@ data "aws_vpc_ipam_pool" "current" {
     for_each = var.ipam_pool_id != "" ? [1] : []
 
     content {
-      name   = "id"
+      name   = "ipam-pool-id"
       values = [var.ipam_pool_id]
     }
   }
