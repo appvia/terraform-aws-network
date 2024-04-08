@@ -51,7 +51,7 @@ module "vpc" {
 
 ## Associate any resolver rules with the vpc if required 
 resource "aws_route53_resolver_rule_association" "vpc_associations" {
-  for_each = var.enable_route53_resolver_rules ? local.resolver_rules : {}
+  for_each = var.enable_route53_resolver_rules ? toset(local.resolver_rules) : null
 
   resolver_rule_id = each.value
   vpc_id           = module.vpc.vpc_attributes.id
