@@ -1,4 +1,4 @@
-![Github Actions](../../workflows/terraform/badge.svg)
+![Github Actions](../../actions/workflows/terraform.yml/badge.svg)
 
 # Terraform AWS Network
 
