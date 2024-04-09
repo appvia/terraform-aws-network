@@ -22,7 +22,7 @@ variable "enable_route53_resolver_rules" {
   default     = true
 }
 
-variable "exclude_resolver_rules" {
+variable "exclude_route53_resolver_rules" {
   description = "List of resolver rules to exclude from association"
   type        = list(string)
   default     = []
@@ -64,16 +64,10 @@ variable "enable_ssm" {
   default     = false
 }
 
-variable "ipam_pool_name" {
-  description = "An optional pool name to use for IPAM pool to use"
-  type        = string
-  default     = ""
-}
-
 variable "ipam_pool_id" {
   description = "An optional pool id to use for IPAM pool to use"
   type        = string
-  default     = ""
+  default     = null
 }
 
 variable "name" {
