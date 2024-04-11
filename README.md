@@ -81,6 +81,8 @@ The `terraform-docs` utility is used to generate this README. Follow the below s
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to all resources | `map(string)` | n/a | yes |
 | <a name="input_additional_subnets"></a> [additional\_subnets](#input\_additional\_subnets) | Additional subnets to create in the network | `map(any)` | `null` | no |
 | <a name="input_availability_zones"></a> [availability\_zones](#input\_availability\_zones) | The number of availability zone the network should be deployed into | `number` | `2` | no |
+| <a name="input_enable_default_route_table_association"></a> [enable\_default\_route\_table\_association](#input\_enable\_default\_route\_table\_association) | Indicates the transit gateway default route table should be associated with the subnets | `bool` | `true` | no |
+| <a name="input_enable_default_route_table_propagation"></a> [enable\_default\_route\_table\_propagation](#input\_enable\_default\_route\_table\_propagation) | Indicates the transit gateway default route table should be propagated to the subnets | `bool` | `true` | no |
 | <a name="input_enable_ipam"></a> [enable\_ipam](#input\_enable\_ipam) | Indicates the cidr block for the network should be assigned from IPAM | `bool` | `true` | no |
 | <a name="input_enable_nat_gateway"></a> [enable\_nat\_gateway](#input\_enable\_nat\_gateway) | Indicates the network should provison nat gateways | `bool` | `false` | no |
 | <a name="input_enable_private_endpoints"></a> [enable\_private\_endpoints](#input\_enable\_private\_endpoints) | Indicates the network should provision private endpoints | `list(string)` | `[]` | no |
@@ -93,8 +95,6 @@ The `terraform-docs` utility is used to generate this README. Follow the below s
 | <a name="input_ipam_pool_id"></a> [ipam\_pool\_id](#input\_ipam\_pool\_id) | An optional pool id to use for IPAM pool to use | `string` | `null` | no |
 | <a name="input_nat_gateway_mode"></a> [nat\_gateway\_mode](#input\_nat\_gateway\_mode) | The configuration mode of the NAT gateways | `string` | `"none"` | no |
 | <a name="input_public_subnet_netmask"></a> [public\_subnet\_netmask](#input\_public\_subnet\_netmask) | The netmask for the public subnets | `number` | `0` | no |
-| <a name="input_transit_gateway_default_route_table_association"></a> [transit\_gateway\_default\_route\_table\_association](#input\_transit\_gateway\_default\_route\_table\_association) | Indicates the transit gateway default route table should be associated with the subnets | `bool` | `true` | no |
-| <a name="input_transit_gateway_default_route_table_propagation"></a> [transit\_gateway\_default\_route\_table\_propagation](#input\_transit\_gateway\_default\_route\_table\_propagation) | Indicates the transit gateway default route table should be propagated to the subnets | `bool` | `true` | no |
 | <a name="input_transit_gateway_id"></a> [transit\_gateway\_id](#input\_transit\_gateway\_id) | If enabled, and not lookup is disabled, the transit gateway id to connect to | `string` | `""` | no |
 | <a name="input_transit_gateway_routes"></a> [transit\_gateway\_routes](#input\_transit\_gateway\_routes) | If enabled, this is the cidr block to route down the transit gateway | `map(string)` | <pre>{<br>  "private": "10.0.0.0/8"<br>}</pre> | no |
 | <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | An optional cidr block to assign to the VPC (if not using IPAM) | `string` | `null` | no |

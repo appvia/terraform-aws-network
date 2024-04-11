@@ -29,8 +29,8 @@ locals {
       netmask                                         = 28
       tags                                            = var.tags
       transit_gateway_appliance_mode_support          = var.enable_transit_gateway_appliance_mode ? "enable" : "disable"
-      transit_gateway_default_route_table_association = var.transit_gateway_default_route_table_association
-      transit_gateway_default_route_table_propagation = var.transit_gateway_default_route_table_propagation
+      transit_gateway_default_route_table_association = var.enable_default_route_table_association
+      transit_gateway_default_route_table_propagation = var.enable_default_route_table_propagation
       transit_gateway_dns_support                     = "enable"
     }
   } : null
