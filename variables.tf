@@ -46,6 +46,18 @@ variable "enable_transit_gateway_subnet_natgw" {
   default     = false
 }
 
+variable "transit_gateway_default_route_table_association" {
+  description = "Indicates the transit gateway default route table should be associated with the subnets"
+  type        = bool
+  default     = true
+}
+
+variable "transit_gateway_default_route_table_propagation" {
+  description = "Indicates the transit gateway default route table should be propagated to the subnets"
+  type        = bool
+  default     = true
+}
+
 variable "enable_transit_gateway_appliance_mode" {
   description = "Indicates the network should be connected to a transit gateway in appliance mode"
   type        = bool
