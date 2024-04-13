@@ -85,16 +85,6 @@ variable "ipam_pool_id" {
 variable "name" {
   description = "Is the name of the network to provision"
   type        = string
-
-  validation {
-    condition     = length(var.name) > 0
-    error_message = "name must be a non-empty string"
-  }
-
-  validation {
-    condition     = length(var.name) <= 10
-    error_message = "name must not be longer than 10 characters"
-  }
 }
 
 variable "nat_gateway_mode" {
