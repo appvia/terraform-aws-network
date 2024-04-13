@@ -109,12 +109,14 @@ The `terraform-docs` utility is used to generate this README. Follow the below s
 | <a name="output_natgw_id_per_az"></a> [natgw\_id\_per\_az](#output\_natgw\_id\_per\_az) | The IDs of the NAT Gateways |
 | <a name="output_private_route_table_ids"></a> [private\_route\_table\_ids](#output\_private\_route\_table\_ids) | The IDs of the private route tables |
 | <a name="output_private_subnet_attributes_by_az"></a> [private\_subnet\_attributes\_by\_az](#output\_private\_subnet\_attributes\_by\_az) | The attributes of the private subnets |
+| <a name="output_private_subnet_id_by_az"></a> [private\_subnet\_id\_by\_az](#output\_private\_subnet\_id\_by\_az) | A map of availability zone to subnet id of the private subnets i.e. eu-west-2a => subnet\_id |
 | <a name="output_private_subnet_id_to_cidr"></a> [private\_subnet\_id\_to\_cidr](#output\_private\_subnet\_id\_to\_cidr) | A map of the private subnet ID to CIDR block |
 | <a name="output_private_subnet_ids"></a> [private\_subnet\_ids](#output\_private\_subnet\_ids) | The IDs of the private subnets |
 | <a name="output_private_subnet_list"></a> [private\_subnet\_list](#output\_private\_subnet\_list) | A list of the CIDRs for the private subnets |
 | <a name="output_private_subnet_netmask"></a> [private\_subnet\_netmask](#output\_private\_subnet\_netmask) | The netmask for the private subnets |
 | <a name="output_public_route_table_ids"></a> [public\_route\_table\_ids](#output\_public\_route\_table\_ids) | The IDs of the public route tables |
 | <a name="output_public_subnet_attributes_by_az"></a> [public\_subnet\_attributes\_by\_az](#output\_public\_subnet\_attributes\_by\_az) | The attributes of the public subnets |
+| <a name="output_public_subnet_id_by_az"></a> [public\_subnet\_id\_by\_az](#output\_public\_subnet\_id\_by\_az) | A map of availability zone to subnet id of the public subnets i.e. eu-west-2a => subnet\_id |
 | <a name="output_public_subnet_id_to_cidr"></a> [public\_subnet\_id\_to\_cidr](#output\_public\_subnet\_id\_to\_cidr) | A map of the public subnet ID to CIDR block |
 | <a name="output_public_subnet_ids"></a> [public\_subnet\_ids](#output\_public\_subnet\_ids) | The IDs of the public subnets |
 | <a name="output_public_subnet_list"></a> [public\_subnet\_list](#output\_public\_subnet\_list) | A list of the CIDRs for the public subnets |

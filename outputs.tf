@@ -37,6 +37,16 @@ output "public_subnet_list" {
   value       = local.public_subnet_cidrs
 }
 
+output "private_subnet_id_by_az" {
+  description = "A map of availability zone to subnet id of the private subnets i.e. eu-west-2a => subnet_id"
+  value       = local.private_subnet_id_by_az
+}
+
+output "public_subnet_id_by_az" {
+  description = "A map of availability zone to subnet id of the public subnets i.e. eu-west-2a => subnet_id"
+  value       = local.public_subnet_id_by_az
+}
+
 output "private_subnet_attributes_by_az" {
   description = "The attributes of the private subnets"
   value       = module.vpc.private_subnet_attributes_by_az
