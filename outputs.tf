@@ -22,9 +22,14 @@ output "private_subnet_list" {
   value       = local.private_subnet_cidrs
 }
 
-output "private_subnet_cidrs" {
-  description = "A map of the CIDRs for the private subnets"
-  value       = local.private_subnet_cidr_map
+output "private_subnet_id_to_cidr" {
+  description = "A map of the private subnet ID to CIDR block"
+  value       = local.private_subnet_cidr_by_id
+}
+
+output "public_subnet_id_to_cidr" {
+  description = "A map of the public subnet ID to CIDR block"
+  value       = local.public_subnet_cidr_by_id
 }
 
 output "public_subnet_list" {
@@ -70,6 +75,16 @@ output "public_subnet_ids" {
 output "private_route_table_ids" {
   description = "The IDs of the private route tables"
   value       = local.private_route_table_ids
+}
+
+output "public_route_table_ids" {
+  description = "The IDs of the public route tables"
+  value       = local.public_route_table_ids
+}
+
+output "transit_route_table_by_az" {
+  description = "A map of availability zone to transit gateway route table ID"
+  value       = var.enable_transit_gateway ? local.transit_route_table_by_az : null
 }
 
 output "transit_gateway_attachment_id" {

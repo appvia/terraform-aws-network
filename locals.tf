@@ -35,14 +35,14 @@ locals {
     }
   } : null
 
-  # private subnet ranges 
+  # A list of all the private subnets cidr blocks
   private_subnet_cidrs = [for k, x in module.vpc.private_subnet_attributes_by_az : x.cidr_block if startswith(k, "private/")]
-  # private subnet range map 
-  private_subnet_cidr_map = { for k, x in module.vpc.private_subnet_attributes_by_az : x.id => x.cidr_block if startswith(k, "private/") }
-
+  # A map of private subnet id to cidr block
+  private_subnet_cidr_by_id = { for k, x in module.vpc.private_subnet_attributes_by_az : x.id => x.cidr_block if startswith(k, "private/") }
+  # A map of public subnet id to cidr block 
+  public_subnet_cidr_by_id = { for k, x in module.vpc.public_subnet_attributes_by_az : x.id => x.cidr_block }
   # public_subnet ranges 
   public_subnet_cidrs = [for k, x in module.vpc.public_subnet_attributes_by_az : x.cidr_block]
-
   # The subnet id for the private subnets
   private_subnet_ids = [for k, x in module.vpc.private_subnet_attributes_by_az : x.id if startswith(k, "private/")]
   # The subnet id for the public subnets
@@ -52,6 +52,9 @@ locals {
   # The routing tables for the private subnets
   private_route_table_ids = [for k, x in module.vpc.rt_attributes_by_type_by_az.private : x.id]
   # The transgit gateway route table ids 
+  public_route_table_ids = var.public_subnet_netmask > 0 ? [for k, x in module.vpc.rt_attributes_by_type_by_az.public : x.id] : []
+  # A map of the route table ids for the transit gateway by az 
+  transit_route_table_by_az = var.enable_transit_gateway ? { for k, v in module.vpc.rt_attributes_by_type_by_az.transit_gateway : k => v.id } : {}
 
   subnets = merge(
     local.private_subnet,
