@@ -53,6 +53,8 @@ locals {
   public_subnet_ids = [for k, x in module.vpc.public_subnet_attributes_by_az : x.id]
   # The subnet id for the transit subnets
   transit_subnet_ids = [for k, x in module.vpc.tgw_subnet_attributes_by_az : x.id]
+  # A list of transit route table ids 
+  transit_route_table_ids = var.enable_transit_gateway ? [for k, x in module.vpc.rt_attributes_by_type_by_az.transit_gateway : x.id] : []
   # The routing tables for the private subnets
   private_route_table_ids = [for k, x in module.vpc.rt_attributes_by_type_by_az.private : x.id]
   # The transgit gateway route table ids 
