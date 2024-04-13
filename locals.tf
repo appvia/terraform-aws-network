@@ -40,7 +40,7 @@ locals {
   # A map of private subnet id to cidr block
   private_subnet_cidr_by_id = { for k, x in module.vpc.private_subnet_attributes_by_az : x.id => x.cidr_block if startswith(k, "private/") }
   # A map of az to private subnet id 
-  private_subnet_id_by_az = { for k, x in module.vpc.private_subnet_attributes_by_az : k => x.id if startswith(k, "private/") }
+  private_subnet_id_by_az = { for k, x in module.vpc.private_subnet_attributes_by_az : trimprefix(k, "private/") => x.id if startswith(k, "private/") }
   # A map of az to public subnet id 
   public_subnet_id_by_az = var.public_subnet_netmask > 0 ? { for k, x in module.vpc.public_subnet_attributes_by_az : k => x.id } : {}
   # A map of public subnet id to cidr block 
