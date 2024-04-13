@@ -44,15 +44,15 @@ locals {
   # A map of az to public subnet id 
   public_subnet_id_by_az = var.public_subnet_netmask > 0 ? { for k, x in module.vpc.public_subnet_attributes_by_az : k => x.id } : {}
   # A map of public subnet id to cidr block 
-  public_subnet_cidr_by_id = { for k, x in module.vpc.public_subnet_attributes_by_az : x.id => x.cidr_block }
+  public_subnet_cidr_by_id = var.public_subnet_netmask > 0 ? { for k, x in module.vpc.public_subnet_attributes_by_az : x.id => x.cidr_block } : {}
   # public_subnet ranges 
-  public_subnet_cidrs = [for k, x in module.vpc.public_subnet_attributes_by_az : x.cidr_block]
+  public_subnet_cidrs = var.public_subnet_netmask > 0 ? [for k, x in module.vpc.public_subnet_attributes_by_az : x.cidr_block] : []
   # The subnet id for the private subnets
   private_subnet_ids = [for k, x in module.vpc.private_subnet_attributes_by_az : x.id if startswith(k, "private/")]
   # The subnet id for the public subnets
-  public_subnet_ids = [for k, x in module.vpc.public_subnet_attributes_by_az : x.id]
+  public_subnet_ids = var.public_subnet_netmask > 0 ? [for k, x in module.vpc.public_subnet_attributes_by_az : x.id] : []
   # The subnet id for the transit subnets
-  transit_subnet_ids = [for k, x in module.vpc.tgw_subnet_attributes_by_az : x.id]
+  transit_subnet_ids = var.enable_transit_gateway ? [for k, x in module.vpc.tgw_subnet_attributes_by_az : x.id] : []
   # A list of transit route table ids 
   transit_route_table_ids = var.enable_transit_gateway ? [for k, x in module.vpc.rt_attributes_by_type_by_az.transit_gateway : x.id] : []
   # The routing tables for the private subnets
