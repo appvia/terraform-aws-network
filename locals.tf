@@ -5,12 +5,13 @@ locals {
   # The id for the transit_gateway_id passed into the module
   transit_gateway_id = var.enable_transit_gateway ? var.transit_gateway_id : null
   # Is the routes to propagate down the transit gateway 
-  transit_routes = var.enable_transit_gateway && length(var.transit_gateway_routes) > 0 ? var.transit_gateway_routes : null
+  transit_routes = var.enable_transit_gateway && length(var.transit_gateway_routes) > 0 ? var.transit_gateway_routes : {}
   # The configuration for the private subnets
   private_subnet = var.private_subnet_netmask > 0 ? {
     private = {
       connect_to_public_natgw = var.enable_nat_gateway ? true : false
       netmask                 = var.private_subnet_netmask
+      assign_ipv6_cidr        = var.private_subnet_assign_ipv6_cidr
       tags                    = var.tags
     }
   } : null
@@ -19,6 +20,7 @@ locals {
     public = {
       nat_gateway_configuration = var.nat_gateway_mode
       netmask                   = var.public_subnet_netmask
+      assign_ipv6_cidr          = var.public_subnet_assign_ipv6_cidr
       tags                      = var.tags
     }
   } : null
@@ -27,6 +29,7 @@ locals {
     transit_gateway = {
       connect_to_public_natgw                         = var.enable_transit_gateway_subnet_natgw
       netmask                                         = 28
+      assign_ipv6_cidr                                = var.transit_gateway_subnet_assign_ipv6_cidr
       tags                                            = var.tags
       transit_gateway_appliance_mode_support          = var.enable_transit_gateway_appliance_mode ? "enable" : "disable"
       transit_gateway_default_route_table_association = var.enable_default_route_table_association
