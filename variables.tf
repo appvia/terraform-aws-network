@@ -108,10 +108,28 @@ variable "private_subnet_netmask" {
   }
 }
 
+variable "private_subnet_assign_ipv6_cidr" {
+  description = "If enabled, assigns and IPv6 range to the subnet"
+  type        = bool
+  default     = null
+}
+
 variable "public_subnet_netmask" {
   description = "The netmask for the public subnets"
   type        = number
   default     = 0
+}
+
+variable "public_subnet_assign_ipv6_cidr" {
+  description = "If enabled, assigns and IPv6 range to the subnet"
+  type        = bool
+  default     = null
+}
+
+variable "transit_gateway_subnet_assign_ipv6_cidr" {
+  description = "If enabled, assigns and IPv6 range to the subnet"
+  type        = bool
+  default     = null
 }
 
 variable "tags" {
@@ -136,6 +154,12 @@ variable "transit_gateway_routes" {
 variable "vpc_cidr" {
   description = "An optional cidr block to assign to the VPC (if not using IPAM)"
   type        = string
+  default     = null
+}
+
+variable "vpc_assign_generated_ipv6_cidr_block" {
+  description = "If enabled, assigns an AWS owned IPv6 CIDR block to the VPC"
+  type        = bool
   default     = null
 }
 
