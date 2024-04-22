@@ -4,6 +4,16 @@ output "vpc_id" {
   value       = module.vpc.vpc_attributes.id
 }
 
+output "vpc_cidr" {
+  description = "The CIDR block of the VPC"
+  value       = module.vpc.vpc_attributes.cidr_block
+}
+
+output "vpc_attributes" {
+  description = "The attributes of the VPC (see aws-ia/vpc/aws for details)"
+  value       = module.vpc.vpc_attributes
+}
+
 output "private_subnet_cidrs" {
   description = "A list of the CIDRs for the private subnets"
   value       = local.private_subnet_cidrs
