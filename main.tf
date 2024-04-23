@@ -4,19 +4,18 @@ module "vpc" {
   source  = "aws-ia/vpc/aws"
   version = "4.4.2"
 
-  name                                 = var.name
-  az_count                             = var.availability_zones
-  cidr_block                           = var.vpc_cidr
-  subnets                              = local.subnets
-  tags                                 = var.tags
-  transit_gateway_id                   = local.transit_gateway_id
-  transit_gateway_routes               = local.transit_routes
-  vpc_instance_tenancy                 = var.vpc_instance_tenancy
-  vpc_enable_dns_hostnames             = true
-  vpc_enable_dns_support               = true
-  vpc_ipv4_ipam_pool_id                = var.enable_ipam ? var.ipam_pool_id : null
-  vpc_ipv4_netmask_length              = var.vpc_netmask
-  vpc_assign_generated_ipv6_cidr_block = var.vpc_assign_generated_ipv6_cidr_block
+  name                     = var.name
+  az_count                 = var.availability_zones
+  cidr_block               = var.vpc_cidr
+  subnets                  = local.subnets
+  tags                     = var.tags
+  transit_gateway_id       = local.transit_gateway_id
+  transit_gateway_routes   = local.transit_routes
+  vpc_instance_tenancy     = var.vpc_instance_tenancy
+  vpc_enable_dns_hostnames = true
+  vpc_enable_dns_support   = true
+  vpc_ipv4_ipam_pool_id    = var.enable_ipam ? var.ipam_pool_id : null
+  vpc_ipv4_netmask_length  = var.vpc_netmask
 }
 
 ## Associate any resolver rules with the vpc if required 

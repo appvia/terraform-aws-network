@@ -94,13 +94,9 @@ The `terraform-docs` utility is used to generate this README. Follow the below s
 | <a name="input_exclude_route53_resolver_rules"></a> [exclude\_route53\_resolver\_rules](#input\_exclude\_route53\_resolver\_rules) | List of resolver rules to exclude from association | `list(string)` | `[]` | no |
 | <a name="input_ipam_pool_id"></a> [ipam\_pool\_id](#input\_ipam\_pool\_id) | An optional pool id to use for IPAM pool to use | `string` | `null` | no |
 | <a name="input_nat_gateway_mode"></a> [nat\_gateway\_mode](#input\_nat\_gateway\_mode) | The configuration mode of the NAT gateways | `string` | `"none"` | no |
-| <a name="input_private_subnet_assign_ipv6_cidr"></a> [private\_subnet\_assign\_ipv6\_cidr](#input\_private\_subnet\_assign\_ipv6\_cidr) | If enabled, assigns and IPv6 range to the subnet | `bool` | `null` | no |
-| <a name="input_public_subnet_assign_ipv6_cidr"></a> [public\_subnet\_assign\_ipv6\_cidr](#input\_public\_subnet\_assign\_ipv6\_cidr) | If enabled, assigns and IPv6 range to the subnet | `bool` | `null` | no |
 | <a name="input_public_subnet_netmask"></a> [public\_subnet\_netmask](#input\_public\_subnet\_netmask) | The netmask for the public subnets | `number` | `0` | no |
 | <a name="input_transit_gateway_id"></a> [transit\_gateway\_id](#input\_transit\_gateway\_id) | If enabled, and not lookup is disabled, the transit gateway id to connect to | `string` | `""` | no |
 | <a name="input_transit_gateway_routes"></a> [transit\_gateway\_routes](#input\_transit\_gateway\_routes) | If enabled, this is the cidr block to route down the transit gateway | `map(string)` | <pre>{<br>  "private": "10.0.0.0/8"<br>}</pre> | no |
-| <a name="input_transit_gateway_subnet_assign_ipv6_cidr"></a> [transit\_gateway\_subnet\_assign\_ipv6\_cidr](#input\_transit\_gateway\_subnet\_assign\_ipv6\_cidr) | If enabled, assigns and IPv6 range to the subnet | `bool` | `null` | no |
-| <a name="input_vpc_assign_generated_ipv6_cidr_block"></a> [vpc\_assign\_generated\_ipv6\_cidr\_block](#input\_vpc\_assign\_generated\_ipv6\_cidr\_block) | If enabled, assigns an AWS owned IPv6 CIDR block to the VPC | `bool` | `null` | no |
 | <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | An optional cidr block to assign to the VPC (if not using IPAM) | `string` | `null` | no |
 | <a name="input_vpc_instance_tenancy"></a> [vpc\_instance\_tenancy](#input\_vpc\_instance\_tenancy) | The name of the VPC to create | `string` | `"default"` | no |
 | <a name="input_vpc_netmask"></a> [vpc\_netmask](#input\_vpc\_netmask) | An optional range assigned to the VPC | `number` | `null` | no |
