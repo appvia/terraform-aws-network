@@ -7,10 +7,12 @@ module "vpc" {
   enable_ipam            = var.enable_ipam
   enable_ssm             = var.enable_ssm
   enable_transit_gateway = var.enable_transit_gateway
+  ipam_pool_id           = var.ipam_pool_id
   name                   = var.name
   private_subnet_netmask = var.private_subnet_netmask
   public_subnet_netmask  = var.public_subnet_netmask
   tags                   = var.tags
   transit_gateway_id     = var.transit_gateway_id
   vpc_cidr               = var.vpc_cidr
+  vpc_netmask            = var.vpc_netmask
 }
