@@ -31,7 +31,7 @@ all:
 
 security: 
 	@echo "--> Running Security checks"
-	@tfsec .
+	@trivy config .
 
 documentation: 
 	@echo "--> Generating documentation"
