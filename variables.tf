@@ -150,3 +150,21 @@ variable "vpc_instance_tenancy" {
   type        = string
   default     = "default"
 }
+
+variable "private_subnet_tags" {
+  description = "Additional tags for the private subnets"
+  type        = map(string)
+  default     = {}
+}
+
+variable "public_subnet_tags" {
+  description = "Additional tags for the public subnets"
+  type        = map(string)
+  default     = {}
+}
+
+variable "transit_subnet_tags" {
+  description = "Additional tags for the transit subnets"
+  type        = map(string)
+  default     = {}
+}
