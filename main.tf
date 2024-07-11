@@ -1,4 +1,3 @@
-
 ## Provision the VPC for VPN
 module "vpc" {
   source  = "aws-ia/vpc/aws"
@@ -52,4 +51,3 @@ resource "aws_vpc_endpoint" "vpe_endpoints" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = module.vpc.vpc_attributes.id
 }
-

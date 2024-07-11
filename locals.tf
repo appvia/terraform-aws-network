@@ -1,4 +1,3 @@
-
 locals {
   # Th current region
   region = data.aws_region.current.name
@@ -11,7 +10,7 @@ locals {
     private = {
       connect_to_public_natgw = var.enable_nat_gateway ? true : false
       netmask                 = var.private_subnet_netmask
-      tags                    = var.tags
+      tags                    = merge(var.tags, var.private_subnet_tags)
     }
   } : null
   # Public subnets are optional
@@ -19,7 +18,7 @@ locals {
     public = {
       nat_gateway_configuration = var.nat_gateway_mode
       netmask                   = var.public_subnet_netmask
-      tags                      = var.tags
+      tags                      = merge(var.tags, var.public_subnet_tags)
     }
   } : null
   # Configuration for the transit subnets 
@@ -27,13 +26,14 @@ locals {
     transit_gateway = {
       connect_to_public_natgw                         = var.enable_transit_gateway_subnet_natgw
       netmask                                         = 28
-      tags                                            = var.tags
+      tags                                            = merge(var.tags, var.transit_subnet_tags)
       transit_gateway_appliance_mode_support          = var.enable_transit_gateway_appliance_mode ? "enable" : "disable"
       transit_gateway_default_route_table_association = var.enable_default_route_table_association
       transit_gateway_default_route_table_propagation = var.enable_default_route_table_propagation
       transit_gateway_dns_support                     = "enable"
     }
   } : null
+
 
   # A list of all the private subnets cidr blocks
   private_subnet_cidrs = [for k, x in module.vpc.private_subnet_attributes_by_az : x.cidr_block if startswith(k, "private/")]
@@ -76,4 +76,3 @@ locals {
   ## Build the list of resolver rules to associate with the vpc 
   resolver_rules = var.enable_route53_resolver_rules ? [for id in data.aws_route53_resolver_rules.current.resolver_rule_ids : id if !contains(var.exclude_route53_resolver_rules, id)] : []
 }
-
