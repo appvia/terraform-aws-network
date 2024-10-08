@@ -1,13 +1,18 @@
 plugin "aws" {
   enabled = true
-  version = "0.30.0"
+  version = "0.32.0"
   source  = "github.com/terraform-linters/tflint-ruleset-aws"
+}
+
+plugin "terraform" {
+  enabled = true
+  version = "0.7.0"
+  source  = "github.com/terraform-linters/tflint-ruleset-terraform"
 }
 
 config {
   call_module_type = "local"
-  module = true
-  force  = false
+  force            = false
 }
 
 rule "terraform_required_providers" {
@@ -61,9 +66,4 @@ rule "terraform_standard_module_structure" {
 
 rule "terraform_workspace_remote" {
   enabled = true
-}
-
-# seems to be a bug when a resource is not created
-rule "aws_route_not_specified_target" {
-  enabled = false
 }

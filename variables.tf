@@ -101,11 +101,7 @@ variable "nat_gateway_mode" {
 variable "private_subnet_netmask" {
   description = "The netmask for the private subnets"
   type        = number
-
-  validation {
-    condition     = var.private_subnet_netmask > 0 && var.private_subnet_netmask <= 28
-    error_message = "private_subnet_netmask must be between 1 and 28"
-  }
+  default     = 0
 }
 
 variable "public_subnet_netmask" {
