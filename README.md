@@ -42,12 +42,181 @@ module "vpc" {
 }
 ```
 
+### Enabling NAT Gateways
+
+To enable NAT gateways in your VPC, you can use the `enable_nat_gateway` and `nat_gateway_mode` variables. Here are some examples:
+
+```hcl
+# Single NAT Gateway for all AZs
+module "vpc" {
+  source  = "appvia/network/aws"
+  version = "0.0.8"
+  
+  enable_nat_gateway = true
+  nat_gateway_mode   = "single"
+  # ... other configuration ...
+}
+
+# One NAT Gateway per AZ for high availability
+module "vpc" {
+  source  = "appvia/network/aws"
+  version = "0.0.8"
+  
+  enable_nat_gateway = true
+  nat_gateway_mode   = "one_per_az"
+  # ... other configuration ...
+}
+```
+
+Remember that NAT gateways incur costs, so choose the configuration that best balances your availability requirements and budget.
+
+### Using Transit Gateway
+
+The module supports connecting your VPC to an AWS Transit Gateway. Here are some common configurations:
+
+```hcl
+# Basic Transit Gateway connection
+module "vpc" {
+  source  = "appvia/network/aws"
+  version = "0.0.8"
+  
+  enable_transit_gateway = true
+  transit_gateway_id     = "tgw-1234567890abcdef0" # Your Transit Gateway ID
+  
+  # Default route to Transit Gateway for private subnets
+  transit_gateway_routes = {
+    private = "10.0.0.0/8"  # Route all 10.0.0.0/8 traffic to Transit Gateway
+  }
+  # ... other configuration ...
+}
+
+# Transit Gateway with appliance mode (for network appliances)
+module "vpc" {
+  source  = "appvia/network/aws"
+  version = "0.0.8"
+  
+  enable_transit_gateway                = true
+  enable_transit_gateway_appliance_mode = true
+  transit_gateway_id                    = "tgw-1234567890abcdef0"
+  
+  # Using a prefix list for routes
+  transit_gateway_routes = {
+    private = "pl-1234567890abcdef0"  # AWS prefix list ID
+  }
+  # ... other configuration ...
+}
+```
+
+The Transit Gateway configuration supports:
+
+- Connecting to an existing Transit Gateway
+- Appliance mode for network appliance deployments
+- Custom routing using CIDR blocks or prefix lists
+- Optional NAT Gateway access for Transit Gateway subnets
+
+### Using Private Endpoints
+
+The module supports creating VPC endpoints for AWS services. Here are some common configurations:
+
+```hcl
+# Enable SSM endpoints (Session Manager)
+module "vpc" {
+  source  = "appvia/network/aws"
+  version = "0.0.8"
+  
+  enable_ssm = true
+  # ... other configuration ...
+}
+
+# Enable specific private endpoints
+module "vpc" {
+  source  = "appvia/network/aws"
+  version = "0.0.8"
+  
+  enable_private_endpoints = [
+    "ecr.api",
+    "ecr.dkr",
+    "s3",
+    "logs"
+  ]
+  # ... other configuration ...
+}
+```
+
+You can use `enable_ssm` as a shortcut to enable the SSM endpoints.
+
+```hcl
+module "vpc" {
+  source  = "appvia/network/aws"
+  version = "0.0.8"
+  
+  enable_ssm = true
+}
+```
+
+## Using Route53 Resolver Rules
+
+The module supports automatically associating shared Route53 Resolver Rules with your VPC. By default, any resolver rules shared with your account will be automatically associated. Here are some configuration examples:
+
+```hcl
+# Disable automatic resolver rule association
+module "vpc" {
+  source  = "appvia/network/aws"
+  version = "0.0.8"
+  
+  enable_route53_resolver_rules = false
+  # ... other configuration ...
+}
+
+# Exclude specific resolver rules from association
+module "vpc" {
+  source  = "appvia/network/aws"
+  version = "0.0.8"
+  
+  enable_route53_resolver_rules    = true
+  exclude_route53_resolver_rules   = ["rslvr-rr-1234567890abcdef0"]  # Resolver Rule IDs to exclude
+  # ... other configuration ...
+}
+```
+
+By default (`enable_route53_resolver_rules = true`), the module will:
+
+- Automatically discover all resolver rules shared with your account
+- Associate them with the VPC being created
+- Allow you to exclude specific rules using the `exclude_route53_resolver_rules` variable
+
+## Adding Additional Subnets
+
+To add more subnets to your VPC, you can extend the subnet configurations in your Terraform code. Here are some examples:
+
+### Adding Public Subnets
+
+```hcl
+module "vpc" { 
+  additional_subnets = {
+    public = {
+      cidr_blocks = ["10.0.10.0/24", "10.0.11.0/24", "10.0.12.0/24"]
+      tags = {
+        Name = "public-subnets"
+      }
+    }
+  }
+}
+```
+
+Remember to:
+
+1. Ensure CIDR blocks don't overlap
+2. Consider your IP address space requirements
+3. Follow your organization's IP addressing scheme
+4. Update route tables and network ACLs accordingly
+
 ## Update Documentation
 
 The `terraform-docs` utility is used to generate this README. Follow the below steps to update:
 
 1. Make changes to the `.terraform-docs.yml` file
-2. Fetch the `terraform-docs` binary (https://terraform-docs.io/user-guide/installation/)
+2. Fetch the `terraform-docs` binary (<https://terraform-docs.io/user-guide/installation/>)
 3. Run `terraform-docs markdown table --output-file ${PWD}/README.md --output-mode inject .`
 
 <!-- BEGIN_TF_DOCS -->
