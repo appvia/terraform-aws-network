@@ -18,3 +18,27 @@ jobs:
     name: Module Validation
     with:
       working-directory: .
+
+  shared-module-validation:
+    uses: appvia/appvia-cicd-workflows/.github/workflows/terraform-module-validation.yml@main
+    name: Shared Module Validation
+    with:
+      working-directory: modules/shared
+
+  ram-module-validation:
+    uses: appvia/appvia-cicd-workflows/.github/workflows/terraform-module-validation.yml@main
+    name: RAM Module Validation
+    with:
+      working-directory: modules/ram
+
+  ram-principal-associations:
+    uses: appvia/appvia-cicd-workflows/.github/workflows/terraform-module-validation.yml@main
+    name: RAM Principal Associations
+    with:
+      working-directory: modules/ram_associations
+
+  ram-resource-associations:
+    uses: appvia/appvia-cicd-workflows/.github/workflows/terraform-module-validation.yml@main
+    name: RAM Resource Associations
+    with:
+      working-directory: modules/ram_resources
