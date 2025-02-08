@@ -2,7 +2,7 @@
 ## Provision a virtual private cloud
 module "vpc" {
   source  = "aws-ia/vpc/aws"
-  version = "4.4.3"
+  version = "4.4.4"
 
   name                     = var.name
   az_count                 = var.availability_zones
