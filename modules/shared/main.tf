@@ -21,12 +21,13 @@ module "vpc" {
 ## Provision a AWS RAM share, to distribute the subnets to the accounts
 module "ram_share" {
   for_each = local.shared_subnets
-  source   = "../ram"
+  source   = "appvia/ram/aws"
+  version  = "0.0.1"
 
   allow_external_principals = false
   name                      = each.value.ram_share_name
   principals                = each.value.principals
-  resources                 = each.value.subnet_ids
+  resource_arns             = local.shared_subnets
   tags                      = var.tags
 
   depends_on = [module.vpc]

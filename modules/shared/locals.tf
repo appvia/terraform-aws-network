@@ -1,5 +1,7 @@
 locals {
-  # Th current region
+  # The account id
+  account_id = data.aws_caller_identity.current.account_id
+  # The current region
   region = data.aws_region.current.name
   # The id for the transit_gateway_id passed into the module
   transit_gateway_id = var.enable_transit_gateway ? var.transit_gateway_id : null
@@ -36,7 +38,9 @@ locals {
     for k, v in var.subnets : k => {
       principals     = length(v.share.accounts) > 0 ? try(v.share.accounts, []) : try(v.share.organization_units, [])
       ram_share_name = format("shared-%s-%s", lower(var.name), k)
-      subnet_ids     = [for k, v in module.vpc.private_subnet_attributes_by_az : v.id]
+      subnet_ids = [
+        for k, v in module.vpc.private_subnet_attributes_by_az : format("arn:aws:ec2:%s:%s:subnet/%s", local.region, local.account_id, v.id)
+      ]
     } if length(try(v.share.accounts, [])) > 0 || length(try(v.share.organization_units, [])) > 0
   }
 
