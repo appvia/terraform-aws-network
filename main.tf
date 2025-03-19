@@ -1,10 +1,11 @@
 ## Provision the VPC for VPN
 module "vpc" {
   source  = "aws-ia/vpc/aws"
-  version = "4.4.4"
+  version = "4.4.3"
 
   name                     = var.name
   az_count                 = var.availability_zones
+  azs                      = slice(data.aws_availability_zones.current.names, 0, var.availability_zones)
   cidr_block               = var.vpc_cidr
   subnets                  = local.subnets
   tags                     = var.tags
@@ -17,7 +18,7 @@ module "vpc" {
   vpc_ipv4_netmask_length  = var.vpc_netmask
 }
 
-## Associate any resolver rules with the vpc if required 
+## Associate any resolver rules with the vpc if required
 resource "aws_route53_resolver_rule_association" "vpc_associations" {
   for_each = var.enable_route53_resolver_rules ? toset(local.resolver_rules) : null
 
@@ -25,7 +26,7 @@ resource "aws_route53_resolver_rule_association" "vpc_associations" {
   vpc_id           = module.vpc.vpc_attributes.id
 }
 
-## Provision the security groups for the private links 
+## Provision the security groups for the private links
 module "private_links" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.3.0"
@@ -51,3 +52,4 @@ resource "aws_vpc_endpoint" "vpe_endpoints" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = module.vpc.vpc_attributes.id
 }
+
