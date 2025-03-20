@@ -1,10 +1,12 @@
 locals {
   # Th current region
   region = data.aws_region.current.name
+  # Indicates if the transit gateway is being proivisioned
+  enable_transit_gateway = var.transit_gateway_id != null
   # The id for the transit_gateway_id passed into the module
-  transit_gateway_id = var.enable_transit_gateway ? var.transit_gateway_id : null
+  transit_gateway_id = local.enable_transit_gateway ? var.transit_gateway_id : null
   # Is the routes to propagate down the transit gateway
-  transit_routes = var.enable_transit_gateway && length(var.transit_gateway_routes) > 0 ? var.transit_gateway_routes : {}
+  transit_routes = local.enable_transit_gateway && length(var.transit_gateway_routes) > 0 ? var.transit_gateway_routes : {}
   # The configuration for the private subnets
   private_subnet = var.private_subnet_netmask > 0 ? {
     private = {
@@ -22,7 +24,7 @@ locals {
     }
   } : null
   # Configuration for the transit subnets
-  transit_subnet = var.enable_transit_gateway ? {
+  transit_subnet = local.enable_transit_gateway ? {
     transit_gateway = {
       connect_to_public_natgw                         = var.enable_transit_gateway_subnet_natgw
       netmask                                         = 28
@@ -52,15 +54,15 @@ locals {
   # The subnet id for the public subnets
   public_subnet_ids = var.public_subnet_netmask > 0 ? [for k, x in module.vpc.public_subnet_attributes_by_az : x.id] : []
   # The subnet id for the transit subnets
-  transit_subnet_ids = var.enable_transit_gateway ? [for k, x in module.vpc.tgw_subnet_attributes_by_az : x.id] : []
+  transit_subnet_ids = local.enable_transit_gateway ? [for k, x in module.vpc.tgw_subnet_attributes_by_az : x.id] : []
   # A list of transit route table ids
-  transit_route_table_ids = var.enable_transit_gateway ? [for k, x in module.vpc.rt_attributes_by_type_by_az.transit_gateway : x.id] : []
+  transit_route_table_ids = local.enable_transit_gateway ? [for k, x in module.vpc.rt_attributes_by_type_by_az.transit_gateway : x.id] : []
   # The routing tables for the private subnets
   private_route_table_ids = [for k, x in module.vpc.rt_attributes_by_type_by_az.private : x.id]
   # The transgit gateway route table ids
   public_route_table_ids = var.public_subnet_netmask > 0 ? [for k, x in module.vpc.rt_attributes_by_type_by_az.public : x.id] : []
   # A map of the route table ids for the transit gateway by az
-  transit_route_table_by_az = var.enable_transit_gateway ? { for k, v in module.vpc.rt_attributes_by_type_by_az.transit_gateway : k => v.id } : {}
+  transit_route_table_by_az = local.enable_transit_gateway ? { for k, v in module.vpc.rt_attributes_by_type_by_az.transit_gateway : k => v.id } : {}
 
   subnets = merge(
     local.private_subnet,

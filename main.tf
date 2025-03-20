@@ -14,7 +14,7 @@ module "vpc" {
   vpc_instance_tenancy     = var.vpc_instance_tenancy
   vpc_enable_dns_hostnames = true
   vpc_enable_dns_support   = true
-  vpc_ipv4_ipam_pool_id    = var.enable_ipam ? var.ipam_pool_id : null
+  vpc_ipv4_ipam_pool_id    = var.ipam_pool_id
   vpc_ipv4_netmask_length  = var.vpc_netmask
 }
 

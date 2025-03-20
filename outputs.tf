@@ -56,7 +56,7 @@ output "public_subnet_attributes_by_az" {
 
 output "transit_subnet_attributes_by_az" {
   description = "The attributes of the transit gateway subnets (see aws-ia/vpc/aws for details)"
-  value       = var.enable_transit_gateway ? module.vpc.tgw_subnet_attributes_by_az : null
+  value       = local.enable_transit_gateway ? module.vpc.tgw_subnet_attributes_by_az : null
 }
 
 output "natgw_id_per_az" {
@@ -81,7 +81,7 @@ output "public_subnet_ids" {
 
 output "transit_subnet_ids" {
   description = "The IDs of the transit gateway subnets ie. [subnet_id, subnet_id]"
-  value       = var.enable_transit_gateway ? local.transit_subnet_ids : null
+  value       = local.enable_transit_gateway ? local.transit_subnet_ids : null
 }
 
 output "private_route_table_ids" {
@@ -96,17 +96,17 @@ output "public_route_table_ids" {
 
 output "transit_route_table_ids" {
   description = "The IDs of the transit gateway route tables ie. [route_table_id, route_table_id]"
-  value       = var.enable_transit_gateway ? local.transit_route_table_ids : null
+  value       = local.enable_transit_gateway ? local.transit_route_table_ids : null
 }
 
 output "transit_route_table_by_az" {
   description = "A map of availability zone to transit gateway route table ID i.e eu-west-2a => route_table_id"
-  value       = var.enable_transit_gateway ? local.transit_route_table_by_az : null
+  value       = local.enable_transit_gateway ? local.transit_route_table_by_az : null
 }
 
 output "transit_gateway_attachment_id" {
   description = "The ID of the transit gateway attachment if enabled"
-  value       = var.enable_transit_gateway ? module.vpc.transit_gateway_attachment_id : null
+  value       = local.enable_transit_gateway ? module.vpc.transit_gateway_attachment_id : null
 }
 
 output "nat_public_ips" {

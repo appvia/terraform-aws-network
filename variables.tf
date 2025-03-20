@@ -10,12 +10,6 @@ variable "additional_subnets" {
   default     = null
 }
 
-variable "enable_ipam" {
-  description = "Indicates the cidr block for the network should be assigned from IPAM"
-  type        = bool
-  default     = true
-}
-
 variable "enable_route53_resolver_rules" {
   description = "Automatically associates any shared route53 resolver rules with the VPC"
   type        = bool
@@ -29,12 +23,6 @@ variable "exclude_route53_resolver_rules" {
 }
 
 variable "enable_nat_gateway" {
-  description = "Indicates the network should provison nat gateways"
-  type        = bool
-  default     = false
-}
-
-variable "enable_transit_gateway" {
   description = "Indicates the network should provison nat gateways"
   type        = bool
   default     = false

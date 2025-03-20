@@ -4,9 +4,7 @@ module "vpc" {
   source = "../.."
 
   availability_zones     = var.availability_zones
-  enable_ipam            = var.enable_ipam
   enable_ssm             = var.enable_ssm
-  enable_transit_gateway = var.enable_transit_gateway
   ipam_pool_id           = var.ipam_pool_id
   name                   = var.name
   private_subnet_netmask = var.private_subnet_netmask
