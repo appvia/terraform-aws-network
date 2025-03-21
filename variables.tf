@@ -118,7 +118,7 @@ variable "tags" {
 variable "transit_gateway_id" {
   description = "If enabled, and not lookup is disabled, the transit gateway id to connect to"
   type        = string
-  default     = ""
+  default     = null
 }
 
 variable "transit_gateway_routes" {
