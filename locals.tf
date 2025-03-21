@@ -7,10 +7,12 @@ locals {
   transit_gateway_id = local.enable_transit_gateway ? var.transit_gateway_id : null
   # Is the routes to propagate down the transit gateway
   transit_routes = local.enable_transit_gateway && length(var.transit_gateway_routes) > 0 ? var.transit_gateway_routes : {}
+  # NAT Configuration mode
+  nat_gateway_mode = var.enable_nat_gateway ? var.nat_gateway_mode : "none"
   # The configuration for the private subnets
   private_subnet = var.private_subnet_netmask > 0 ? {
     private = {
-      connect_to_public_natgw = var.enable_nat_gateway ? true : false
+      connect_to_public_natgw = var.enable_nat_gateway
       netmask                 = var.private_subnet_netmask
       tags                    = merge(var.tags, var.private_subnet_tags)
     }
@@ -18,7 +20,7 @@ locals {
   # Public subnets are optional
   public_subnet = var.public_subnet_netmask > 0 ? {
     public = {
-      nat_gateway_configuration = var.nat_gateway_mode
+      nat_gateway_configuration = local.nat_gateway_mode
       netmask                   = var.public_subnet_netmask
       tags                      = merge(var.tags, var.public_subnet_tags)
     }
