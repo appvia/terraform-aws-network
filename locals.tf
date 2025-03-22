@@ -1,6 +1,10 @@
 locals {
-  # Th current region
+  # The current account id
+  account_id = data.aws_caller_identity.current.account_id
+  # The current region
   region = data.aws_region.current.name
+  # Indicates if the nat gateway is being provisioned
+  enable_nat_gateway = var.nat_gateway_mode != "none" ? true : false
   # Indicates if the transit gateway is being proivisioned
   enable_transit_gateway = var.transit_gateway_id != null
   # The id for the transit_gateway_id passed into the module
@@ -8,11 +12,11 @@ locals {
   # Is the routes to propagate down the transit gateway
   transit_routes = local.enable_transit_gateway && length(var.transit_gateway_routes) > 0 ? var.transit_gateway_routes : {}
   # NAT Configuration mode
-  nat_gateway_mode = var.enable_nat_gateway ? var.nat_gateway_mode : "none"
+  nat_gateway_mode = local.enable_nat_gateway ? var.nat_gateway_mode : "none"
   # The configuration for the private subnets
   private_subnet = var.private_subnet_netmask > 0 ? {
     private = {
-      connect_to_public_natgw = var.enable_nat_gateway
+      connect_to_public_natgw = local.enable_nat_gateway
       netmask                 = var.private_subnet_netmask
       tags                    = merge(var.tags, var.private_subnet_tags)
     }
@@ -38,7 +42,13 @@ locals {
     }
   } : null
 
-
+  # A map of all the subnets by name i.e. private/us-east-1a, public/us-east-1a, etc.
+  all_subnets = merge(module.vpc.private_subnet_attributes_by_az, module.vpc.public_subnet_attributes_by_az)
+  ## A list of all the names of the subnets
+  all_subnets_by_name = { for name in keys(try(var.subnets, {})) : name => {
+    arns = [for k, v in local.all_subnets : format("arn:aws:ec2:%s:%s:subnet/%s", local.region, local.account_id, v.id) if startswith(k, "${name}/")]
+    ids  = [for k, v in local.all_subnets : v.id if startswith(k, "${name}/")]
+  } }
   # A list of all the private subnets cidr blocks
   private_subnet_cidrs = [for k, x in module.vpc.private_subnet_attributes_by_az : x.cidr_block if startswith(k, "private/")]
   # A map of private subnet id to cidr block
@@ -70,7 +80,7 @@ locals {
     local.private_subnet,
     local.public_subnet,
     local.transit_subnet,
-    var.additional_subnets,
+    var.subnets,
   )
 
   # A list of the private endpoints to enable ssm

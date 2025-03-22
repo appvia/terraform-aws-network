@@ -4,16 +4,10 @@ variable "availability_zones" {
   default     = 2
 }
 
-variable "additional_subnets" {
-  description = "Additional subnets to create in the network"
-  type        = map(any)
-  default     = null
-}
-
-variable "enable_ipam" {
-  description = "Indicates the cidr block for the network should be assigned from IPAM"
-  type        = bool
-  default     = true
+variable "subnets" {
+  description = "Additional subnets to create in the network, keyed by the subnet name"
+  type        = any
+  default     = {}
 }
 
 variable "enable_route53_resolver_rules" {
@@ -26,18 +20,6 @@ variable "exclude_route53_resolver_rules" {
   description = "List of resolver rules to exclude from association"
   type        = list(string)
   default     = []
-}
-
-variable "enable_nat_gateway" {
-  description = "Indicates the network should provison nat gateways"
-  type        = bool
-  default     = false
-}
-
-variable "enable_transit_gateway" {
-  description = "Indicates the network should provison nat gateways"
-  type        = bool
-  default     = false
 }
 
 variable "enable_transit_gateway_subnet_natgw" {
@@ -94,7 +76,7 @@ variable "nat_gateway_mode" {
 
   validation {
     condition     = can(regex("^(none|all_azs|single_az)$", var.nat_gateway_mode))
-    error_message = "nat_gateway_mode must be non, all_azs, or single_az"
+    error_message = "nat_gateway_mode must be none, all_azs, or single_az"
   }
 }
 

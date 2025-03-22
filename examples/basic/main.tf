@@ -1,28 +1,33 @@
 
+locals {
+  tags = {
+    "Environment" = "test"
+    "GitRepo"     = "https://github.com/appvia/terraform-aws-network"
+    "Terraform"   = "true"
+  }
+
+}
+
 ## Provision a VPC with public and private subnets
 module "vpc" {
   source = "../.."
 
-  availability_zones     = var.availability_zones
-  enable_ipam            = var.enable_ipam
-  enable_ssm             = var.enable_ssm
-  enable_transit_gateway = var.enable_transit_gateway
-  ipam_pool_id           = var.ipam_pool_id
-  name                   = var.name
-  private_subnet_netmask = var.private_subnet_netmask
-  public_subnet_netmask  = var.public_subnet_netmask
-  tags                   = var.tags
-  transit_gateway_id     = var.transit_gateway_id
-  vpc_cidr               = var.vpc_cidr
-  vpc_netmask            = var.vpc_netmask
+  availability_zones     = 3
+  enable_ssm             = true
+  ipam_pool_id           = "ipam-pool-id"
+  name                   = "operations"
+  private_subnet_netmask = 24
+  public_subnet_netmask  = 24
+  tags                   = local.tags
+  vpc_cidr               = "10.100.0.0/21"
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${var.name}" = "owned"
-    "kubernetes.io/role/elb"            = "1"
+    "kubernetes.io/cluster/operations" = "owned"
+    "kubernetes.io/role/elb"           = "1"
   }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${var.name}" = "owned"
-    "kubernetes.io/role/internal-elb"   = "1"
+    "kubernetes.io/cluster/operations" = "owned"
+    "kubernetes.io/role/internal-elb"  = "1"
   }
 }

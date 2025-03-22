@@ -13,11 +13,11 @@ module "vpc" {
   vpc_instance_tenancy     = var.vpc_instance_tenancy
   vpc_enable_dns_hostnames = true
   vpc_enable_dns_support   = true
-  vpc_ipv4_ipam_pool_id    = var.enable_ipam ? var.ipam_pool_id : null
+  vpc_ipv4_ipam_pool_id    = var.ipam_pool_id
   vpc_ipv4_netmask_length  = var.vpc_netmask
 }
 
-## Associate any resolver rules with the vpc if required 
+## Associate any resolver rules with the vpc if required
 resource "aws_route53_resolver_rule_association" "vpc_associations" {
   for_each = var.enable_route53_resolver_rules ? toset(local.resolver_rules) : null
 
@@ -25,7 +25,7 @@ resource "aws_route53_resolver_rule_association" "vpc_associations" {
   vpc_id           = module.vpc.vpc_attributes.id
 }
 
-## Provision the security groups for the private links 
+## Provision the security groups for the private links
 module "private_links" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.3.0"
@@ -51,3 +51,4 @@ resource "aws_vpc_endpoint" "vpe_endpoints" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = module.vpc.vpc_attributes.id
 }
+
