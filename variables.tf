@@ -4,10 +4,10 @@ variable "availability_zones" {
   default     = 2
 }
 
-variable "subnets" {
-  description = "Additional subnets to create in the network, keyed by the subnet name"
-  type        = any
-  default     = {}
+variable "dns_query_log_retention" {
+  description = "The number of days to retain DNS query logs"
+  type        = number
+  default     = 7
 }
 
 variable "enable_route53_resolver_rules" {
@@ -38,6 +38,12 @@ variable "enable_default_route_table_propagation" {
   description = "Indicates the transit gateway default route table should be propagated to the subnets"
   type        = bool
   default     = true
+}
+
+variable "enable_dns_request_logging" {
+  description = "Enable logging of DNS requests"
+  type        = bool
+  default     = false
 }
 
 variable "enable_transit_gateway_appliance_mode" {
@@ -109,6 +115,12 @@ variable "transit_gateway_routes" {
   default = {
     "private" = "10.0.0.0/8"
   }
+}
+
+variable "subnets" {
+  description = "Additional subnets to create in the network, keyed by the subnet name"
+  type        = any
+  default     = {}
 }
 
 variable "vpc_cidr" {

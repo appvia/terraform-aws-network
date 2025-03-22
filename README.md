@@ -150,6 +150,22 @@ module "vpc" {
 }
 ```
 
+## Enable DNS Request Logging
+
+To enable DNS request logging in your VPC, you can use the `enable_dns_request_logging` variable. This feature allows you to log DNS queries made within your VPC, which can be useful for monitoring and troubleshooting.
+
+Here is an example configuration:
+
+```hcl
+module "vpc" {
+  source  = "appvia/network/aws"
+  version = "0.0.8"
+
+  enable_dns_request_logging = true
+  # ... other configuration ...
+}
+```
+
 ## Using Route53 Resolver Rules
 
 The module supports automatically associating shared Route53 Resolver Rules with your VPC. By default, any resolver rules shared with your account will be automatically associated. Here are some configuration examples:
@@ -229,8 +245,10 @@ The `terraform-docs` utility is used to generate this README. Follow the below s
 | <a name="input_name"></a> [name](#input\_name) | Is the name of the network to provision | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to all resources | `map(string)` | n/a | yes |
 | <a name="input_availability_zones"></a> [availability\_zones](#input\_availability\_zones) | The number of availability zone the network should be deployed into | `number` | `2` | no |
+| <a name="input_dns_query_log_retention"></a> [dns\_query\_log\_retention](#input\_dns\_query\_log\_retention) | The number of days to retain DNS query logs | `number` | `7` | no |
 | <a name="input_enable_default_route_table_association"></a> [enable\_default\_route\_table\_association](#input\_enable\_default\_route\_table\_association) | Indicates the transit gateway default route table should be associated with the subnets | `bool` | `true` | no |
 | <a name="input_enable_default_route_table_propagation"></a> [enable\_default\_route\_table\_propagation](#input\_enable\_default\_route\_table\_propagation) | Indicates the transit gateway default route table should be propagated to the subnets | `bool` | `true` | no |
+| <a name="input_enable_dns_request_logging"></a> [enable\_dns\_request\_logging](#input\_enable\_dns\_request\_logging) | Enable logging of DNS requests | `bool` | `false` | no |
 | <a name="input_enable_private_endpoints"></a> [enable\_private\_endpoints](#input\_enable\_private\_endpoints) | Indicates the network should provision private endpoints | `list(string)` | `[]` | no |
 | <a name="input_enable_route53_resolver_rules"></a> [enable\_route53\_resolver\_rules](#input\_enable\_route53\_resolver\_rules) | Automatically associates any shared route53 resolver rules with the VPC | `bool` | `true` | no |
 | <a name="input_enable_ssm"></a> [enable\_ssm](#input\_enable\_ssm) | Indicates we should provision SSM private endpoints | `bool` | `false` | no |
