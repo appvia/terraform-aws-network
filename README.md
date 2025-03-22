@@ -216,12 +216,56 @@ module "vpc" {
 }
 ```
 
+## Sharing Subnets via RAM
+
+VPC sharing allows multiple AWS accounts to create their application resources, such as Amazon EC2 instances, Amazon RDS databases, and Amazon Redshift clusters, into a shared, centrally managed VPC. The benefits of VPC sharing include:
+
+- **Cost Savings**: By sharing a single VPC across multiple accounts, you can reduce the number of VPCs needed, which can lead to cost savings.
+- **Simplified Network Management**: Centralized management of network resources simplifies the administration and monitoring of network configurations.
+- **Improved Security**: VPC sharing allows for consistent security policies and monitoring across multiple accounts, enhancing the overall security posture.
+
 Remember to:
 
 1. Ensure CIDR blocks don't overlap
 2. Consider your IP address space requirements
 3. Follow your organization's IP addressing scheme
 4. Update route tables and network ACLs accordingly
+
+The module include a convenient way to share subnets using AWS Resource Access Manager (RAM). Here is an example configuration:
+
+```hcl
+## Alternatively you specify the subnets directly
+module "vpc" {
+  source = "../.."
+
+  availability_zones = 3
+  name               = "development"
+  tags               = local.tags
+  vpc_cidr           = "10.90.0.0/16"
+
+  subnets = {
+    prod = {
+      netmask = 24
+    }
+    "dev" = {
+      netmask = 24
+    }
+  }
+}
+
+## Note, due to the arns being dynamic this will be need to perform with a target,
+## i.e vpc must exist before the share can be applied.
+module "share_dev" {
+  source = "../../modules/shared"
+
+  name        = "dev"
+  share       = { accounts = ["123456789012"] }
+  subnet_arns = module.vpc.all_subnets_by_name["dev"].arns
+  tags        = local.tags
+
+  depends_on = [module.vpc]
+}
+```
 
 ## Update Documentation
 
@@ -299,3 +343,7 @@ The `terraform-docs` utility is used to generate this README. Follow the below s
 | <a name="output_vpc_cidr"></a> [vpc\_cidr](#output\_vpc\_cidr) | The CIDR block of the VPC |
 | <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | The ID of the VPC |
 <!-- END_TF_DOCS -->
+
+```
+
+```
