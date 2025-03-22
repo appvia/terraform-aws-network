@@ -45,7 +45,7 @@ locals {
   # A map of all the subnets by name i.e. private/us-east-1a, public/us-east-1a, etc.
   all_subnets = merge(module.vpc.private_subnet_attributes_by_az, module.vpc.public_subnet_attributes_by_az)
   ## A list of all the names of the subnets
-  all_subnets_by_name = { for name in keys(var.subnets) : name => {
+  all_subnets_by_name = { for name in keys(try(var.subnets, {})) : name => {
     arns = [for k, v in local.all_subnets : format("arn:aws:ec2:%s:%s:subnet/%s", local.region, local.account_id, v.id) if startswith(k, "${name}/")]
     ids  = [for k, v in local.all_subnets : v.id if startswith(k, "${name}/")]
   } }

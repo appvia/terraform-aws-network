@@ -7,7 +7,7 @@ variable "availability_zones" {
 variable "subnets" {
   description = "Additional subnets to create in the network, keyed by the subnet name"
   type        = any
-  default     = null
+  default     = {}
 }
 
 variable "enable_route53_resolver_rules" {
