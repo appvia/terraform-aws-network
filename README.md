@@ -25,7 +25,6 @@ module "vpc" {
   version = "0.0.8"
 
   availability_zones                    = var.availability_zones
-  enable_ipam                           = var.enable_ipam
   enable_ssm                            = var.enable_ssm
   enable_transit_gateway_appliance_mode = true
   ipam_pool_id                          = data.aws_vpc_ipam_pool.current.id
