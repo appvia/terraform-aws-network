@@ -9,6 +9,7 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_name"></a> [name](#input\_name) | The name of the subnets to create the NACL for | `string` | n/a | yes |
 | <a name="input_subnet_count"></a> [subnet\_count](#input\_subnet\_count) | The number of subnets to create the NACL for | `number` | n/a | yes |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | The subnet IDs to apply the NACL to | `list(string)` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to apply to the NACL | `map(string)` | n/a | yes |
