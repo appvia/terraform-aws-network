@@ -266,6 +266,52 @@ module "share_dev" {
 }
 ```
 
+## Network Access Control Lists (NACLS)
+
+Network Access Control Lists (NACLs) are an optional layer of security for your VPC that acts as a firewall for controlling traffic in and out of one or more subnets. Unlike security groups, NACLs are stateless, meaning that responses to allowed inbound traffic are subject to the rules for outbound traffic. NACLs allow you to explicitly allow or deny traffic based on IP address, port, and protocol. Here's an example of how to configure NACLs in this module:
+
+```hcl
+module "vpc" {
+  source = "../.."
+  
+  name               = "production"
+  vpc_cidr           = "10.0.0.0/16"
+  availability_zones = 3
+  tags               = local.tags
+  
+  subnets = {
+    private = {
+      netmask = 24
+    }
+  }
+  
+  nacl_rules = {
+    private = {
+      inbound_rules = [
+        {
+          cidr_block  = "10.0.0.0/24"
+          from_port   = 22
+          to_port     = 22
+          protocol    = 6  # TCP
+          rule_action = "allow"
+          rule_number = 100
+        }
+      ],
+      outbound_rules = [
+        {
+          cidr_block  = "0.0.0.0/0"
+          from_port   = 0
+          to_port     = 65535
+          protocol    = -1  # All traffic
+          rule_action = "allow"
+          rule_number = 100
+        }
+      ]
+    }
+  }
+}
+```
+
 ## Update Documentation
 
 The `terraform-docs` utility is used to generate this README. Follow the below steps to update:
@@ -299,6 +345,7 @@ The `terraform-docs` utility is used to generate this README. Follow the below s
 | <a name="input_enable_transit_gateway_subnet_natgw"></a> [enable\_transit\_gateway\_subnet\_natgw](#input\_enable\_transit\_gateway\_subnet\_natgw) | Indicates if the transit gateway subnets should be connected to a nat gateway | `bool` | `false` | no |
 | <a name="input_exclude_route53_resolver_rules"></a> [exclude\_route53\_resolver\_rules](#input\_exclude\_route53\_resolver\_rules) | List of resolver rules to exclude from association | `list(string)` | `[]` | no |
 | <a name="input_ipam_pool_id"></a> [ipam\_pool\_id](#input\_ipam\_pool\_id) | An optional pool id to use for IPAM pool to use | `string` | `null` | no |
+| <a name="input_nacl_rules"></a> [nacl\_rules](#input\_nacl\_rules) | Map of NACL rules to apply to different subnet types. Each rule requires from\_port, to\_port, protocol, rule\_action, cidr\_block, and rule\_number | <pre>map(object({<br/>    inbound_rules = list(object({<br/>      cidr_block      = string<br/>      from_port       = number<br/>      icmp_code       = optional(number, 0)<br/>      icmp_type       = optional(number, 0)<br/>      ipv6_cidr_block = optional(string, null)<br/>      protocol        = optional(number, -1)<br/>      rule_action     = string<br/>      rule_number     = number<br/>      to_port         = number<br/>    }))<br/>    outbound_rules = list(object({<br/>      cidr_block      = string<br/>      from_port       = number<br/>      icmp_code       = optional(number, 0)<br/>      icmp_type       = optional(number, 0)<br/>      ipv6_cidr_block = optional(string, null)<br/>      protocol        = optional(number, -1)<br/>      rule_action     = string<br/>      rule_number     = number<br/>      to_port         = number<br/>    }))<br/>  }))</pre> | `{}` | no |
 | <a name="input_nat_gateway_mode"></a> [nat\_gateway\_mode](#input\_nat\_gateway\_mode) | The configuration mode of the NAT gateways | `string` | `"none"` | no |
 | <a name="input_private_subnet_netmask"></a> [private\_subnet\_netmask](#input\_private\_subnet\_netmask) | The netmask for the private subnets | `number` | `0` | no |
 | <a name="input_private_subnet_tags"></a> [private\_subnet\_tags](#input\_private\_subnet\_tags) | Additional tags for the private subnets | `map(string)` | `{}` | no |

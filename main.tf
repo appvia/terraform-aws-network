@@ -17,6 +17,22 @@ module "vpc" {
   vpc_ipv4_netmask_length  = var.vpc_netmask
 }
 
+## Provision the NACLs for each of the subnets
+module "nacls" {
+  for_each = var.nacl_rules
+  source   = "./modules/nacls"
+
+  inbound_rules  = var.nacl_rules[each.key].inbound_rules
+  name           = each.key
+  outbound_rules = var.nacl_rules[each.key].outbound_rules
+  subnet_count   = var.availability_zones
+  subnet_ids     = local.all_subnets_by_name[each.key].ids
+  tags           = var.tags
+  vpc_id         = module.vpc.vpc_attributes.id
+
+  depends_on = [module.vpc]
+}
+
 ## Enable DNS request logging if required
 resource "aws_cloudwatch_log_group" "dns_query_logs" {
   count = var.enable_dns_request_logging ? 1 : 0
@@ -44,7 +60,7 @@ resource "aws_route53_resolver_query_log_config_association" "dns_query_log_asso
 
 ## Associate any resolver rules with the vpc if required
 resource "aws_route53_resolver_rule_association" "vpc_associations" {
-  for_each = var.enable_route53_resolver_rules ? toset(local.resolver_rules) : null
+  for_each = var.enable_route53_resolver_rules ? toset(local.resolver_rules) : []
 
   resolver_rule_id = each.value
   vpc_id           = module.vpc.vpc_attributes.id
