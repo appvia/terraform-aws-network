@@ -1,16 +1,11 @@
 
 ## Provision the inbound NACL 
-resource "aws_network_acl" "inbound" {
+resource "aws_network_acl" "nacl" {
   vpc_id = var.vpc_id
-  tags   = var.tags
+  tags   = merge(var.tags, { Name = "${var.name}" })
 }
 
 ## Provision the outbound NACL  
-resource "aws_network_acl" "outbound" {
-  vpc_id = var.vpc_id
-  tags   = var.tags
-}
-
 ## Provision the inbound NACL rules 
 resource "aws_network_acl_rule" "inbound" {
   for_each = local.inbound
@@ -21,19 +16,11 @@ resource "aws_network_acl_rule" "inbound" {
   icmp_code       = each.value.rule.icmp_code
   icmp_type       = each.value.rule.icmp_type
   ipv6_cidr_block = each.value.rule.ipv6_cidr_block
-  network_acl_id  = aws_network_acl.inbound.id
+  network_acl_id  = aws_network_acl.nacl.id
   protocol        = each.value.rule.protocol
   rule_action     = each.value.rule.rule_action
   rule_number     = each.value.rule.rule_number
   to_port         = each.value.rule.to_port
-}
-
-## Associate the inbound NACL with the subnets  
-resource "aws_network_acl_association" "inbound" {
-  for_each = local.inbound
-
-  network_acl_id = aws_network_acl.inbound.id
-  subnet_id      = each.value.id
 }
 
 ## Provision the outbound NACL rules  
@@ -46,17 +33,17 @@ resource "aws_network_acl_rule" "outbound" {
   icmp_code       = each.value.rule.icmp_code
   icmp_type       = each.value.rule.icmp_type
   ipv6_cidr_block = each.value.rule.ipv6_cidr_block
-  network_acl_id  = aws_network_acl.outbound.id
+  network_acl_id  = aws_network_acl.nacl.id
   protocol        = each.value.rule.protocol
   rule_action     = each.value.rule.rule_action
   rule_number     = each.value.rule.rule_number
   to_port         = each.value.rule.to_port
 }
 
-## Associate the outbound NACL with the subnets  
-resource "aws_network_acl_association" "outbound" {
-  for_each = local.outbound
+## Associate the inbound NACL with the subnets  
+resource "aws_network_acl_association" "nacl" {
+  for_each = local.inbound
 
-  network_acl_id = aws_network_acl.outbound.id
+  network_acl_id = aws_network_acl.nacl.id
   subnet_id      = each.value.id
 }

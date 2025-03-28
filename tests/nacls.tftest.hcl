@@ -75,6 +75,7 @@ run "check_nacl_rules" {
   }
 
   variables {
+    name         = "private"
     vpc_id       = "vpc-1234567890"
     subnet_count = 3
     subnet_ids   = ["subnet-1234567890", "subnet-1234567891", "subnet-1234567892"]
@@ -106,63 +107,38 @@ run "check_nacl_rules" {
   }
 
   assert {
-    condition     = aws_network_acl.inbound != null
+    condition     = aws_network_acl.nacl != null
     error_message = "Inbound NACL should be created"
   }
 
   assert {
-    condition     = aws_network_acl.inbound.vpc_id == "vpc-1234567890"
+    condition     = aws_network_acl.nacl.vpc_id == "vpc-1234567890"
     error_message = "Inbound NACL should be associated with the VPC"
   }
 
   assert {
-    condition     = aws_network_acl.outbound != null
-    error_message = "Outbound NACL should be created"
-  }
-
-  assert {
-    condition     = length(aws_network_acl.inbound.tags) > 0
+    condition     = length(aws_network_acl.nacl.tags) > 0
     error_message = "Inbound NACL should have the correct tags"
   }
 
   assert {
-    condition     = aws_network_acl.outbound.vpc_id == "vpc-1234567890"
+    condition     = aws_network_acl.nacl.vpc_id == "vpc-1234567890"
     error_message = "Outbound NACL should be associated with the VPC"
   }
 
   assert {
-    condition     = length(aws_network_acl.outbound.tags) > 0
-    error_message = "Outbound NACL should have the correct tags"
+    error_message = "It should associate the inbound NACL with the subnets"
+    condition     = aws_network_acl_association.nacl["0-0"].subnet_id == "subnet-1234567890"
   }
 
   assert {
     error_message = "It should associate the inbound NACL with the subnets"
-    condition     = aws_network_acl_association.inbound["0-0"].subnet_id == "subnet-1234567890"
+    condition     = aws_network_acl_association.nacl["1-0"].subnet_id == "subnet-1234567891"
   }
 
   assert {
     error_message = "It should associate the inbound NACL with the subnets"
-    condition     = aws_network_acl_association.inbound["1-0"].subnet_id == "subnet-1234567891"
-  }
-
-  assert {
-    error_message = "It should associate the inbound NACL with the subnets"
-    condition     = aws_network_acl_association.inbound["2-0"].subnet_id == "subnet-1234567892"
-  }
-
-  assert {
-    error_message = "It should associate the outbound NACL with the subnets"
-    condition     = aws_network_acl_association.outbound["0-0"].subnet_id == "subnet-1234567890"
-  }
-
-  assert {
-    error_message = "It should associate the outbound NACL with the subnets"
-    condition     = aws_network_acl_association.outbound["1-0"].subnet_id == "subnet-1234567891"
-  }
-
-  assert {
-    error_message = "It should associate the outbound NACL with the subnets"
-    condition     = aws_network_acl_association.outbound["2-0"].subnet_id == "subnet-1234567892"
+    condition     = aws_network_acl_association.nacl["2-0"].subnet_id == "subnet-1234567892"
   }
 
   assert {

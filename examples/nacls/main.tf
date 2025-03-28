@@ -11,17 +11,15 @@ locals {
 module "vpc" {
   source = "../.."
 
-  availability_zones = 3
-  enable_ssm         = true
-  name               = "operations"
-  tags               = local.tags
-  vpc_cidr           = "10.100.0.0/21"
+  availability_zones            = 2
+  enable_ssm                    = false
+  enable_route53_resolver_rules = false
+  name                          = "operations"
+  tags                          = local.tags
+  vpc_cidr                      = "10.100.0.0/21"
 
   subnets = {
     private = {
-      netmask = 24
-    }
-    public = {
       netmask = 24
     }
   }
@@ -35,7 +33,7 @@ module "vpc" {
           to_port     = 22
           protocol    = -1
           rule_action = "allow"
-          rule_number = 100
+          rule_number = 50
         }
       ]
       outbound_rules = [
@@ -45,7 +43,7 @@ module "vpc" {
           to_port     = 22
           protocol    = -1
           rule_action = "allow"
-          rule_number = 100
+          rule_number = 50
         }
       ]
     }

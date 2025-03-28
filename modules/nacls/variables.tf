@@ -1,4 +1,9 @@
 
+variable "name" {
+  description = "The name of the subnets to create the NACL for"
+  type        = string
+}
+
 variable "vpc_id" {
   description = "The VPC ID to create the NACL in"
   type        = string
