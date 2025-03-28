@@ -17,6 +17,21 @@ module "vpc" {
   vpc_ipv4_netmask_length  = var.vpc_netmask
 }
 
+## Provision the NACLs for each of the subnets
+module "nacls" {
+  for_each = var.nacl_rules
+  source   = "./modules/nacls"
+
+  vpc_id         = module.vpc.vpc_attributes.id
+  subnet_count   = var.availability_zones
+  subnet_ids     = local.all_subnets_by_name[each.key].ids
+  inbound_rules  = var.nacl_rules[each.key].inbound_rules
+  outbound_rules = var.nacl_rules[each.key].outbound_rules
+  tags           = var.tags
+
+  depends_on = [module.vpc]
+}
+
 ## Enable DNS request logging if required
 resource "aws_cloudwatch_log_group" "dns_query_logs" {
   count = var.enable_dns_request_logging ? 1 : 0
