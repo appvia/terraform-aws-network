@@ -1,12 +1,12 @@
 
-## Provision the inbound NACL 
+## Provision the inbound NACL
 resource "aws_network_acl" "nacl" {
   vpc_id = var.vpc_id
-  tags   = merge(var.tags, { Name = "${var.name}" })
+  tags   = merge(var.tags, { Name = var.name })
 }
 
-## Provision the outbound NACL  
-## Provision the inbound NACL rules 
+## Provision the outbound NACL
+## Provision the inbound NACL rules
 resource "aws_network_acl_rule" "inbound" {
   for_each = local.inbound
 
@@ -23,7 +23,7 @@ resource "aws_network_acl_rule" "inbound" {
   to_port         = each.value.rule.to_port
 }
 
-## Provision the outbound NACL rules  
+## Provision the outbound NACL rules
 resource "aws_network_acl_rule" "outbound" {
   for_each = local.outbound
 
@@ -40,7 +40,7 @@ resource "aws_network_acl_rule" "outbound" {
   to_port         = each.value.rule.to_port
 }
 
-## Associate the inbound NACL with the subnets  
+## Associate the inbound NACL with the subnets
 resource "aws_network_acl_association" "nacl" {
   for_each = local.inbound
 
