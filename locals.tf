@@ -42,6 +42,8 @@ locals {
     }
   } : null
 
+  ## A collection of all the tags for all the resources 
+  tags = merge(var.tags, {})
   # A map of all the subnets by name i.e. private/us-east-1a, public/us-east-1a, etc.
   all_subnets = merge(module.vpc.private_subnet_attributes_by_az, module.vpc.public_subnet_attributes_by_az)
   ## A list of all the names of the subnets

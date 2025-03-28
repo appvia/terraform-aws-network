@@ -187,3 +187,15 @@ variable "nacl_rules" {
   }))
   default = {}
 }
+
+variable "enable_s3_endpoint" {
+  description = "Enable S3 VPC Gateway endpoint"
+  type        = bool
+  default     = false
+}
+
+variable "enable_dynamodb_endpoint" {
+  description = "Enable DynamoDB VPC Gateway endpoint"
+  type        = bool
+  default     = false
+}
