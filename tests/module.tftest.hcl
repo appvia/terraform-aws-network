@@ -9,6 +9,14 @@ mock_provider "aws" {
     }
   }
 
+  mock_data "aws_route53_resolver_rules" {
+    defaults = {
+      resolver_rule_ids = [
+        "rslvr-rr-1234567890",
+      ]
+    }
+  }
+
   mock_data "aws_region" {
     defaults = {
       name = "eu-west-1"
@@ -74,6 +82,16 @@ run "basic" {
   assert {
     condition     = aws_vpc_endpoint.s3[0].vpc_endpoint_type == "Gateway"
     error_message = "s3 endpoint should be created"
+  }
+
+  assert {
+    condition     = aws_route53_resolver_rule_association.vpc_associations["rslvr-rr-1234567890"] != null
+    error_message = "resolver rule association should be created"
+  }
+
+  assert {
+    condition     = aws_route53_resolver_rule_association.vpc_associations["rslvr-rr-1234567890"].resolver_rule_id == "rslvr-rr-1234567890"
+    error_message = "resolver rule association should have the correct values"
   }
 }
 
