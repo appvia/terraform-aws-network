@@ -22,13 +22,13 @@ module "nacls" {
   for_each = var.nacl_rules
   source   = "./modules/nacls"
 
-  inbound_rules  = var.nacl_rules[each.key].inbound_rules
-  name           = each.key
-  outbound_rules = var.nacl_rules[each.key].outbound_rules
-  subnet_count   = var.availability_zones
-  subnet_ids     = local.all_subnets_by_name[each.key].ids
-  tags           = local.tags
-  vpc_id         = module.vpc.vpc_attributes.id
+  inbound      = var.nacl_rules[each.key].inbound
+  name         = each.key
+  outbound     = var.nacl_rules[each.key].outbound
+  subnet_count = var.availability_zones
+  subnet_ids   = local.all_subnets_by_name[each.key].ids
+  tags         = local.tags
+  vpc_id       = module.vpc.vpc_attributes.id
 
   depends_on = [module.vpc]
 }

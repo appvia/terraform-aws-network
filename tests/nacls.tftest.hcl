@@ -30,7 +30,7 @@ run "check_nacl" {
 
     nacl_rules = {
       private = {
-        inbound_rules = [
+        inbound = [
           {
             cidr_block  = "10.100.0.0/24"
             from_port   = 22
@@ -40,7 +40,7 @@ run "check_nacl" {
             rule_number = 100
           }
         ]
-        outbound_rules = [
+        outbound = [
           {
             cidr_block  = "10.100.0.0/24"
             from_port   = 22
@@ -79,7 +79,7 @@ run "check_nacl_rules" {
     vpc_id       = "vpc-1234567890"
     subnet_count = 3
     subnet_ids   = ["subnet-1234567890", "subnet-1234567891", "subnet-1234567892"]
-    inbound_rules = [
+    inbound = [
       {
         cidr_block  = "10.100.0.0/24"
         from_port   = 22
@@ -89,7 +89,7 @@ run "check_nacl_rules" {
         rule_number = 100
       }
     ]
-    outbound_rules = [
+    outbound = [
       {
         cidr_block  = "10.100.0.0/24"
         from_port   = 22

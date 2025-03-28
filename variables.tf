@@ -162,27 +162,27 @@ variable "transit_subnet_tags" {
 variable "nacl_rules" {
   description = "Map of NACL rules to apply to different subnet types. Each rule requires from_port, to_port, protocol, rule_action, cidr_block, and rule_number"
   type = map(object({
-    inbound_rules = list(object({
+    inbound = list(object({
       cidr_block      = string
-      from_port       = number
+      from_port       = optional(number, null)
       icmp_code       = optional(number, 0)
       icmp_type       = optional(number, 0)
       ipv6_cidr_block = optional(string, null)
       protocol        = optional(number, -1)
-      rule_action     = string
+      rule_action     = optional(string, "allow")
       rule_number     = number
-      to_port         = number
+      to_port         = optional(number, null)
     }))
-    outbound_rules = list(object({
+    outbound = list(object({
       cidr_block      = string
-      from_port       = number
+      from_port       = optional(number, null)
       icmp_code       = optional(number, 0)
       icmp_type       = optional(number, 0)
       ipv6_cidr_block = optional(string, null)
       protocol        = optional(number, -1)
-      rule_action     = string
+      rule_action     = optional(string, "allow")
       rule_number     = number
-      to_port         = number
+      to_port         = optional(number, null)
     }))
   }))
   default = {}

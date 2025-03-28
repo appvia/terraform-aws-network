@@ -19,7 +19,7 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
-variable "inbound_rules" {
+variable "inbound" {
   description = "The inbound rules to apply to the NACL"
   type = list(object({
     cidr_block      = string
@@ -35,7 +35,7 @@ variable "inbound_rules" {
   default = []
 }
 
-variable "outbound_rules" {
+variable "outbound" {
   description = "The outbound rules to apply to the NACL"
   type = list(object({
     cidr_block      = string

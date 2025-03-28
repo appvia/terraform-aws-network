@@ -26,7 +26,7 @@ module "vpc" {
 
   nacl_rules = {
     private = {
-      inbound_rules = [
+      inbound = [
         {
           cidr_block  = "10.100.0.0/24"
           from_port   = 22
@@ -36,7 +36,7 @@ module "vpc" {
           rule_number = 50
         }
       ]
-      outbound_rules = [
+      outbound = [
         {
           cidr_block  = "10.100.0.0/24"
           from_port   = 22
