@@ -94,4 +94,3 @@ run "basic" {
     error_message = "resolver rule association should have the correct values"
   }
 }
-

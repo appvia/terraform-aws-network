@@ -3,7 +3,7 @@
 resource "aws_vpc_endpoint" "s3" {
   count = var.enable_s3_endpoint ? 1 : 0
 
-  route_table_ids   = local.public_route_table_ids
+  route_table_ids   = local.private_route_table_ids
   service_name      = "com.amazonaws.${local.region}.s3"
   tags              = merge(local.tags, { Name = "vpce-s3-${var.name}" })
   vpc_endpoint_type = "Gateway"
@@ -14,7 +14,7 @@ resource "aws_vpc_endpoint" "s3" {
 resource "aws_vpc_endpoint" "dynamodb" {
   count = var.enable_dynamodb_endpoint ? 1 : 0
 
-  route_table_ids   = local.public_route_table_ids
+  route_table_ids   = local.private_route_table_ids
   service_name      = "com.amazonaws.${local.region}.dynamodb"
   tags              = merge(local.tags, { Name = "vpce-dynamodb-${var.name}" })
   vpc_endpoint_type = "Gateway"
