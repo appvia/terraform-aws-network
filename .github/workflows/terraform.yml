@@ -24,3 +24,9 @@ jobs:
     name: Shared Module Validation
     with:
       working-directory: modules/shared
+
+  nacls-validation:
+    uses: appvia/appvia-cicd-workflows/.github/workflows/terraform-module-validation.yml@main
+    name: NACLS Validation
+    with:
+      working-directory: modules/nacls
