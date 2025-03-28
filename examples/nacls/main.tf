@@ -33,7 +33,7 @@ module "vpc" {
           cidr_block  = "10.100.0.0/24"
           from_port   = 22
           to_port     = 22
-          protocol    = "tcp"
+          protocol    = -1
           rule_action = "allow"
           rule_number = 100
         }
@@ -43,7 +43,7 @@ module "vpc" {
           cidr_block  = "10.100.0.0/24"
           from_port   = 22
           to_port     = 22
-          protocol    = "tcp"
+          protocol    = -1
           rule_action = "allow"
           rule_number = 100
         }
