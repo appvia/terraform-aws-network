@@ -23,14 +23,14 @@ variable "inbound_rules" {
   description = "The inbound rules to apply to the NACL"
   type = list(object({
     cidr_block      = string
-    from_port       = number
+    from_port       = optional(number, null)
     icmp_code       = optional(number, 0)
     icmp_type       = optional(number, 0)
     ipv6_cidr_block = optional(string, null)
     protocol        = optional(number, -1)
-    rule_action     = string
+    rule_action     = optional(string, "allow")
     rule_number     = number
-    to_port         = number
+    to_port         = optional(number, nu)
   }))
   default = []
 }
@@ -39,14 +39,14 @@ variable "outbound_rules" {
   description = "The outbound rules to apply to the NACL"
   type = list(object({
     cidr_block      = string
-    from_port       = number
+    from_port       = optional(number, null)
     icmp_code       = optional(number, 0)
     icmp_type       = optional(number, 0)
     ipv6_cidr_block = optional(string, null)
     protocol        = optional(number, -1)
-    rule_action     = string
+    rule_action     = optional(string, "allow")
     rule_number     = number
-    to_port         = number
+    to_port         = optional(number, null)
   }))
   default = []
 }
