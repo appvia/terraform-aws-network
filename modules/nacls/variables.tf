@@ -30,7 +30,7 @@ variable "inbound_rules" {
     protocol        = optional(number, -1)
     rule_action     = optional(string, "allow")
     rule_number     = number
-    to_port         = optional(number, nu)
+    to_port         = optional(number, null)
   }))
   default = []
 }
