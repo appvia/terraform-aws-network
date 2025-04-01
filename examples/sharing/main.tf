@@ -5,7 +5,6 @@ locals {
     "GitRepo"     = "https://github.com/appvia/terraform-aws-network"
     "Terraform"   = "true"
   }
-
 }
 
 ## Alteratively you specifiy the subnets directly
@@ -16,26 +15,29 @@ module "vpc" {
   name               = "development"
   tags               = local.tags
   vpc_cidr           = "10.90.0.0/16"
-
-  subnets = {
-    prod = {
-      netmask = 24
-    }
-    "dev" = {
-      netmask = 24
-    }
-  }
 }
 
 ## Note, due to the arns being dynamic this will be need to perfomed with a target,
 ## i.e vpc must exist before the share can be applied.
-module "share_dev" {
+module "subnets" {
   source = "../../modules/shared"
 
-  name        = "dev"
-  share       = { accounts = ["123456789012"] }
-  subnet_arns = module.vpc.all_subnets_by_name["dev"].arns
-  tags        = local.tags
+  name   = "dev"
+  share  = { accounts = ["123456789012"] }
+  tags   = local.tags
+  vpc_id = module.vpc.vpc_id
 
-  depends_on = [module.vpc]
+  permitted_subnets = [
+    "10.90.20.0/24",
+  ]
+
+  subnets = {
+    web = {
+      cidrs = ["10.90.0.0/24", "10.90.1.0/24"]
+    }
+    app = {
+      cidrs = ["10.90.10.0/24", "10.90.11.0/24"]
+    }
+  }
 }
+
