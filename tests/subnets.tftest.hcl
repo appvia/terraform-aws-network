@@ -44,6 +44,13 @@ run "validation_subnets_module" {
         cidrs = ["10.90.10.0/24", "10.90.11.0/24"]
       }
     }
+
+    routes = [
+      {
+        cidr       = "0.0.0.0/0"
+        gateway_id = "tgw-12345678"
+      }
+    ]
   }
 
   assert {
@@ -190,5 +197,30 @@ run "validation_subnets_module" {
   assert {
     condition     = aws_ram_principal_association.accounts["123456789012"] != null
     error_message = "The expected the ram principal association for the accounts was not found"
+  }
+
+  assert {
+    condition     = aws_route_table.current != null && aws_route_table.current.vpc_id == "vpc-12345678" && aws_route_table.current.tags["Name"] == "test"
+    error_message = "The expected the route table was not found"
+  }
+
+  assert {
+    condition     = aws_route_table_association.current["app-10.90.10.0/24"] != null
+    error_message = "The expected the route table association for the app subnets was not found"
+  }
+
+  assert {
+    condition     = aws_route_table_association.current["app-10.90.11.0/24"] != null && aws_route_table_association.current["app-10.90.10.0/24"] != null
+    error_message = "The expected the route table association for the app subnets was not found"
+  }
+
+  assert {
+    condition     = aws_route_table_association.current["web-10.90.0.0/24"] != null && aws_route_table_association.current["web-10.90.1.0/24"] != null
+    error_message = "The expected the route table association for the web subnets was not found"
+  }
+
+  assert {
+    condition     = aws_route.current["0.0.0.0/0"].gateway_id == "tgw-12345678"
+    error_message = "The expected the route was not found"
   }
 }
