@@ -8,9 +8,4 @@ data "aws_vpc" "current" {
 }
 
 ## Find the availability zones in the VPC
-data "aws_availability_zones" "current" {
-  filter {
-    name   = "vpc-id"
-    values = [var.vpc_id]
-  }
-}
+data "aws_availability_zones" "current" {}
