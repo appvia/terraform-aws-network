@@ -35,7 +35,7 @@ module "vpc" {
   transit_gateway_id                    = data.aws_ec2_transit_gateway.this.id
   vpc_cidr                              = var.vpc_cidr
 
-  transit_gateway_rotues = {
+  transit_gateway_routes = {
     private = aws_ec2_managed_prefix_list.internal.id
   }
 }
@@ -230,12 +230,11 @@ Remember to:
 1. Ensure CIDR blocks don't overlap
 2. Consider your IP address space requirements
 3. Follow your organization's IP addressing scheme
-4. Update route tables and network ACLs accordingly
 
 The module include a convenient way to share subnets using AWS Resource Access Manager (RAM). Here is an example configuration:
 
 ```hcl
-## Alternatively you specify the subnets directly
+## Provision a network is no subnets inside
 module "vpc" {
   source = "../.."
 
@@ -243,50 +242,61 @@ module "vpc" {
   name               = "development"
   tags               = local.tags
   vpc_cidr           = "10.90.0.0/16"
+}
+
+## Curve out subnets for sharing
+module "subnets" {
+  source = "../../modules/shared"
+
+  name   = "product-a"
+  share  = { accounts = ["123456789012"] }
+  tags   = local.tags
+  vpc_id = module.vpc.vpc_id
+
+  ## Additional subnet to add to the isolation zone
+  permitted_subnets = [
+    "10.90.20.0/24",
+  ]
 
   subnets = {
-    prod = {
-      netmask = 24
+    web = {
+      cidrs = ["10.90.0.0/24", "10.90.1.0/24"]
     }
-    "dev" = {
-      netmask = 24
+    app = {
+      cidrs = ["10.90.10.0/24", "10.90.11.0/24"]
     }
   }
 }
-
-## Note, due to the arns being dynamic this will be need to perform with a target,
-## i.e vpc must exist before the share can be applied.
-module "share_dev" {
-  source = "../../modules/shared"
-
-  name        = "dev"
-  share       = { accounts = ["123456789012"] }
-  subnet_arns = module.vpc.all_subnets_by_name["dev"].arns
-  tags        = local.tags
-
-  depends_on = [module.vpc]
-}
 ```
 
-## Network Access Control Lists (NACLS)
+Note, this module will automatically create a network access control list (NACL) for the shared subnets, it will any
+
+1. Permit all outbound and inbound traffic from the subnets
+2. Permit all outbound and inbound traffic from the `var.permitted_subnets` variable cidr_blocks.
+3. Deny all other traffic to the VPC CIDR block.
+4. Permit all outbound and inbound traffic not destined to the VPC CIDR block.
+
+By performing the above to ensure the subnets are isolated from the rest of the VPC, while still allowing access to external resources.
+
+## Network Access Control Lists (NACLs)
 
 Network Access Control Lists (NACLs) are an optional layer of security for your VPC that acts as a firewall for controlling traffic in and out of one or more subnets. Unlike security groups, NACLs are stateless, meaning that responses to allowed inbound traffic are subject to the rules for outbound traffic. NACLs allow you to explicitly allow or deny traffic based on IP address, port, and protocol. Here's an example of how to configure NACLs in this module:
 
 ```hcl
 module "vpc" {
   source = "../.."
-  
+
   name               = "production"
   vpc_cidr           = "10.0.0.0/16"
   availability_zones = 3
   tags               = local.tags
-  
+
   subnets = {
     private = {
       netmask = 24
     }
   }
-  
+
   nacl_rules = {
     private = {
       inbound_rules = [

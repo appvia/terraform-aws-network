@@ -42,15 +42,17 @@ locals {
     }
   } : null
 
-  ## A collection of all the tags for all the resources 
+  ## A collection of all the tags for all the resources
   tags = merge(var.tags, {})
   # A map of all the subnets by name i.e. private/us-east-1a, public/us-east-1a, etc.
   all_subnets = merge(module.vpc.private_subnet_attributes_by_az, module.vpc.public_subnet_attributes_by_az)
   ## A list of all the names of the subnets
   all_subnets_by_name = { for name in keys(try(var.subnets, {})) : name => {
-    arns = [for k, v in local.all_subnets : format("arn:aws:ec2:%s:%s:subnet/%s", local.region, local.account_id, v.id) if startswith(k, "${name}/")]
-    ids  = [for k, v in local.all_subnets : v.id if startswith(k, "${name}/")]
+    arns        = [for k, v in local.all_subnets : format("arn:aws:ec2:%s:%s:subnet/%s", local.region, local.account_id, v.id) if startswith(k, "${name}/")]
+    cidr_blocks = [for k, v in local.all_subnets : v.cidr_block if startswith(k, "${name}/")]
+    ids         = [for k, v in local.all_subnets : v.id if startswith(k, "${name}/")]
   } }
+
   # A list of all the private subnets cidr blocks
   private_subnet_cidrs = [for k, x in module.vpc.private_subnet_attributes_by_az : x.cidr_block if startswith(k, "private/")]
   # A map of private subnet id to cidr block
@@ -78,6 +80,7 @@ locals {
   # A map of the route table ids for the transit gateway by az
   transit_route_table_by_az = local.enable_transit_gateway ? { for k, v in module.vpc.rt_attributes_by_type_by_az.transit_gateway : k => v.id } : {}
 
+  ## A list of all the subnets
   subnets = merge(
     local.private_subnet,
     local.public_subnet,

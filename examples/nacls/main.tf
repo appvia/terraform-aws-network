@@ -20,7 +20,12 @@ module "vpc" {
 
   subnets = {
     private = {
-      netmask = 24
+      netmask       = 24
+      isolation_key = "private"
+    }
+    devops_apps = {
+      netmask       = 24
+      isolation_key = "devops"
     }
   }
 
