@@ -29,5 +29,6 @@ resource "aws_route" "current" {
   nat_gateway_id            = each.value.nat_gateway_id
   network_interface_id      = each.value.network_interface_id
   route_table_id            = aws_route_table.current.id
+  transit_gateway_id        = each.value.transit_gateway_id
   vpc_peering_connection_id = each.value.vpc_peering_connection_id
 }
