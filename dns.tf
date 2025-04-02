@@ -32,3 +32,11 @@ resource "aws_route53_resolver_rule_association" "vpc_associations" {
   resolver_rule_id = each.value
   vpc_id           = module.vpc.vpc_attributes.id
 }
+
+## Associate the route53 hosted zone with the VPC
+resource "aws_route53_zone_association" "association" {
+  for_each = toset(var.associate_hosted_ids)
+
+  vpc_id  = module.vpc.vpc_attributes.id
+  zone_id = each.value
+}

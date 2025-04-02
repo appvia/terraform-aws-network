@@ -1,3 +1,9 @@
+variable "associate_hosted_ids" {
+  description = "The list of hosted zone ids to associate with the VPC"
+  type        = list(string)
+  default     = []
+}
+
 variable "availability_zones" {
   description = "The number of availability zone the network should be deployed into"
   type        = number
