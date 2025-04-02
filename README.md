@@ -345,6 +345,7 @@ The `terraform-docs` utility is used to generate this README. Follow the below s
 |------|-------------|------|---------|:--------:|
 | <a name="input_name"></a> [name](#input\_name) | Is the name of the network to provision | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to all resources | `map(string)` | n/a | yes |
+| <a name="input_associate_hosted_ids"></a> [associate\_hosted\_ids](#input\_associate\_hosted\_ids) | The list of hosted zone ids to associate with the VPC | `list(string)` | `[]` | no |
 | <a name="input_availability_zones"></a> [availability\_zones](#input\_availability\_zones) | The number of availability zone the network should be deployed into | `number` | `2` | no |
 | <a name="input_dns_query_log_retention"></a> [dns\_query\_log\_retention](#input\_dns\_query\_log\_retention) | The number of days to retain DNS query logs | `number` | `7` | no |
 | <a name="input_enable_default_route_table_association"></a> [enable\_default\_route\_table\_association](#input\_enable\_default\_route\_table\_association) | Indicates the transit gateway default route table should be associated with the subnets | `bool` | `true` | no |
