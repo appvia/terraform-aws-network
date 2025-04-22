@@ -11,6 +11,7 @@ resource "aws_ssm_parameter" "current" {
   name        = format("%s/%s/%s", var.parameter_store_prefix, var.vpc_id, var.name)
   description = "Used to share resource related tags with other accounts"
   type        = "String"
+  tier        = "Advanced"
   value       = jsonencode(local.subnet_map)
   tags        = local.tags
 }
