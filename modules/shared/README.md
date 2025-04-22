@@ -12,6 +12,7 @@
 | <a name="input_name"></a> [name](#input\_name) | The name used to prefix resources, and which should be unique | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to apply to the NACL | `map(string)` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | The VPC ID to provision the subnets in | `string` | n/a | yes |
+| <a name="input_enable_parameter_store"></a> [enable\_parameter\_store](#input\_enable\_parameter\_store) | Whether to share information via the SSM parameter store | `bool` | `true` | no |
 | <a name="input_parameter_store_prefix"></a> [parameter\_store\_prefix](#input\_parameter\_store\_prefix) | The prefix to use for the SSM parameter store | `string` | `"/lz/network/shared"` | no |
 | <a name="input_permitted_subnets"></a> [permitted\_subnets](#input\_permitted\_subnets) | A collection of additional subnets to allow access to | `list(string)` | `[]` | no |
 | <a name="input_ram_share_prefix"></a> [ram\_share\_prefix](#input\_ram\_share\_prefix) | The prefix to use for the RAM share name | `string` | `"network-share-"` | no |
