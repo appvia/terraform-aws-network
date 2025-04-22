@@ -9,6 +9,12 @@ variable "vpc_id" {
   type        = string
 }
 
+variable "enable_parameter_store" {
+  description = "Whether to share information via the SSM parameter store"
+  type        = bool
+  default     = true
+}
+
 variable "share" {
   description = "The principals to share the provisioned subnets with"
   type = object({
