@@ -20,6 +20,12 @@ variable "share" {
   default = {}
 }
 
+variable "parameter_store_prefix" {
+  description = "The prefix to use for the SSM parameter store"
+  type        = string
+  default     = "/lz/network/shared"
+}
+
 variable "permitted_subnets" {
   description = "A collection of additional subnets to allow access to"
   type        = list(string)
