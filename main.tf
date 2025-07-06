@@ -1,7 +1,7 @@
 ## Provision the VPC for VPN
 module "vpc" {
   source  = "aws-ia/vpc/aws"
-  version = "4.4.4"
+  version = "4.5.0"
 
   name                     = var.name
   az_count                 = var.availability_zones
