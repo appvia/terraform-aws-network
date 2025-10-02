@@ -2,7 +2,7 @@ locals {
   # The current account id
   account_id = data.aws_caller_identity.current.account_id
   # The current region
-  region = data.aws_region.current.name
+  region = data.aws_region.current.region
   # Indicates if the nat gateway is being provisioned
   enable_nat_gateway = var.nat_gateway_mode != "none" ? true : false
   # Indicates if the transit gateway is being proivisioned
