@@ -82,6 +82,50 @@ variable "exclude_route53_resolver_rules" {
   default     = []
 }
 
+variable "flow_logs" {
+  description = "Configuration for VPC flow logs"
+  type = object({
+    ## The type of destination for the flow logs (s3, kinesis-data-firehose, cloud-watch-logs)
+    destination_type = string
+    ## The ARN of the destination for the flow logs (s3 bucket, kinesis data firehose, cloud watch logs)
+    destination_arn = string
+    ## The format of the flow logs (plain-text, parquet)
+    log_format = optional(string, "plain-text")
+    ## The type of traffic to capture (ALL, ACCEPT, REJECT)
+    traffic_type = optional(string, "ALL")
+    ## Destination options
+    destination_options = optional(object({
+      # The format of the flow logs (plain-text, parquet)
+      file_format = string
+      # Whether to use hive compatible partitions
+      hive_compatible_partitions = bool
+      # Whether to partition the flow logs per hour
+      per_hour_partition = bool
+    }), null)
+  })
+  default = null
+
+  # Must be destination type is not none
+  validation {
+    condition = alltrue([
+      contains(["s3", "kinesis-data-firehose", "cloud-watch-logs"], try(var.flow_logs.destination_type, "s3"))
+    ])
+    error_message = "The destination type must be s3, kinesis-data-firehose, cloud-watch-logs"
+  }
+
+  # Ensure valiadate in the log format is either plain-text or parquet
+  validation {
+    condition     = contains(["plain-text", "parquet"], try(var.flow_logs.log_format, "plain-text"))
+    error_message = "The log format must be plain-text or parquet"
+  }
+
+  # Ensure the traffic type is correct
+  validation {
+    condition     = contains(["ALL", "ACCEPT", "REJECT"], try(var.flow_logs.traffic_type, "ALL"))
+    error_message = "The traffic type must be ALL, ACCEPT, or REJECT"
+  }
+}
+
 variable "ipam_pool_id" {
   description = "An optional pool id to use for IPAM pool to use"
   type        = string

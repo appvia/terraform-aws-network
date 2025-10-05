@@ -167,6 +167,133 @@ module "vpc" {
 }
 ```
 
+## Enable VPC Flow Logs
+
+VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. Flow log data can be published to Amazon CloudWatch Logs, Amazon S3, or Amazon Kinesis Data Firehose.
+
+### Basic Configuration
+
+```hcl
+module "vpc" {
+  source  = "appvia/network/aws"
+
+  flow_logs = {
+    destination_type = "s3"
+    destination_arn  = "arn:aws:s3:::my-flow-logs-bucket"
+    log_format       = "plain-text"
+    traffic_type     = "ALL"
+  }
+  # ... other configuration ...
+}
+```
+
+### Advanced S3 Configuration
+
+For S3 destinations, you can configure additional options for better log organization and analysis:
+
+```hcl
+module "vpc" {
+  source  = "appvia/network/aws"
+
+  flow_logs = {
+    destination_type = "s3"
+    destination_arn  = "arn:aws:s3:::my-flow-logs-bucket"
+    log_format       = "parquet"
+    traffic_type     = "ALL"
+    
+    destination_options = {
+      file_format                = "parquet"
+      hive_compatible_partitions = true
+      per_hour_partition         = true
+    }
+  }
+  # ... other configuration ...
+}
+```
+
+### CloudWatch Logs Configuration
+
+```hcl
+module "vpc" {
+  source  = "appvia/network/aws"
+
+  flow_logs = {
+    destination_type = "cloud-watch-logs"
+    destination_arn  = "arn:aws:logs:us-west-2:123456789012:log-group:/aws/vpc/flowlogs"
+    log_format       = "plain-text"
+    traffic_type     = "ACCEPT"
+  }
+  # ... other configuration ...
+}
+```
+
+### Kinesis Data Firehose Configuration
+
+```hcl
+module "vpc" {
+  source  = "appvia/network/aws"
+
+  flow_logs = {
+    destination_type = "kinesis-data-firehose"
+    destination_arn  = "arn:aws:firehose:us-west-2:123456789012:deliverystream/vpc-flow-logs"
+    log_format       = "parquet"
+    traffic_type     = "ALL"
+  }
+  # ... other configuration ...
+}
+```
+
+### Flow Logs Configuration Options
+
+| Parameter | Description | Valid Values | Default |
+|-----------|-------------|--------------|---------|
+| `destination_type` | Where to publish flow logs | `s3`, `kinesis-data-firehose`, `cloud-watch-logs` | Required |
+| `destination_arn` | ARN of the destination | Valid ARN for the destination type | Required |
+| `log_format` | Format of the flow logs | `plain-text`, `parquet` | `plain-text` |
+| `traffic_type` | Type of traffic to capture | `ALL`, `ACCEPT`, `REJECT` | `ALL` |
+
+### S3 Destination Options
+
+When using S3 as the destination, you can configure additional options:
+
+| Parameter | Description | Type | Default |
+|-----------|-------------|------|---------|
+| `file_format` | Format of the flow logs | `string` | Required |
+| `hive_compatible_partitions` | Use Hive-compatible partitions | `bool` | Required |
+| `per_hour_partition` | Partition logs per hour | `bool` | Required |
+
+### Use Cases
+
+- **Security Monitoring**: Track rejected connections and potential security threats
+- **Network Troubleshooting**: Analyze network connectivity issues
+- **Compliance**: Meet regulatory requirements for network monitoring
+- **Cost Optimization**: Identify unused or underutilized network resources
+- **Performance Analysis**: Monitor network performance and identify bottlenecks
+
+### Best Practices
+
+1. **Choose the Right Traffic Type**:
+   - Use `ALL` for comprehensive monitoring
+   - Use `ACCEPT` to focus on successful connections
+   - Use `REJECT` to monitor security events
+
+2. **Select Appropriate Log Format**:
+   - Use `plain-text` for simple analysis and debugging
+   - Use `parquet` for advanced analytics and cost optimization
+
+3. **Configure S3 Options**:
+   - Enable `hive_compatible_partitions` for better query performance
+   - Use `per_hour_partition` for better log organization
+
+4. **Consider Costs**:
+   - S3 is typically the most cost-effective option
+   - CloudWatch Logs can be expensive for high-volume traffic
+   - Kinesis Data Firehose is useful for real-time processing
+
+5. **Set Up Lifecycle Policies**:
+   - Configure S3 lifecycle policies to manage log retention
+   - Archive old logs to cheaper storage classes
+
 ## Using Route53 Resolver Rules
 
 The module supports automatically associating shared Route53 Resolver Rules with your VPC. By default, any resolver rules shared with your account will be automatically associated. Here are some configuration examples:
@@ -359,6 +486,7 @@ The `terraform-docs` utility is used to generate this README. Follow the below s
 | <a name="input_enable_transit_gateway_appliance_mode"></a> [enable\_transit\_gateway\_appliance\_mode](#input\_enable\_transit\_gateway\_appliance\_mode) | Indicates the network should be connected to a transit gateway in appliance mode | `bool` | `false` | no |
 | <a name="input_enable_transit_gateway_subnet_natgw"></a> [enable\_transit\_gateway\_subnet\_natgw](#input\_enable\_transit\_gateway\_subnet\_natgw) | Indicates if the transit gateway subnets should be connected to a nat gateway | `bool` | `false` | no |
 | <a name="input_exclude_route53_resolver_rules"></a> [exclude\_route53\_resolver\_rules](#input\_exclude\_route53\_resolver\_rules) | List of resolver rules to exclude from association | `list(string)` | `[]` | no |
+| <a name="input_flow_logs"></a> [flow\_logs](#input\_flow\_logs) | Configuration for VPC flow logs | <pre>object({<br/>    ## The type of destination for the flow logs (s3, kinesis-data-firehose, cloud-watch-logs)<br/>    destination_type = string<br/>    ## The ARN of the destination for the flow logs (s3 bucket, kinesis data firehose, cloud watch logs)<br/>    destination_arn = string<br/>    ## The format of the flow logs (plain-text, parquet)<br/>    log_format = optional(string, "plain-text")<br/>    ## The type of traffic to capture (ALL, ACCEPT, REJECT)<br/>    traffic_type = optional(string, "ALL")<br/>    ## Destination options<br/>    destination_options = optional(object({<br/>      # The format of the flow logs (plain-text, parquet)<br/>      file_format = string<br/>      # Whether to use hive compatible partitions<br/>      hive_compatible_partitions = bool<br/>      # Whether to partition the flow logs per hour<br/>      per_hour_partition = bool<br/>    }), null)<br/>  })</pre> | `null` | no |
 | <a name="input_ipam_pool_id"></a> [ipam\_pool\_id](#input\_ipam\_pool\_id) | An optional pool id to use for IPAM pool to use | `string` | `null` | no |
 | <a name="input_nacl_rules"></a> [nacl\_rules](#input\_nacl\_rules) | Map of NACL rules to apply to different subnet types. Each rule requires from\_port, to\_port, protocol, rule\_action, cidr\_block, and rule\_number | <pre>map(object({<br/>    inbound = list(object({<br/>      cidr_block      = string<br/>      from_port       = optional(number, null)<br/>      icmp_code       = optional(number, 0)<br/>      icmp_type       = optional(number, 0)<br/>      ipv6_cidr_block = optional(string, null)<br/>      protocol        = optional(number, -1)<br/>      rule_action     = optional(string, "allow")<br/>      rule_number     = number<br/>      to_port         = optional(number, null)<br/>    }))<br/>    outbound = list(object({<br/>      cidr_block      = string<br/>      from_port       = optional(number, null)<br/>      icmp_code       = optional(number, 0)<br/>      icmp_type       = optional(number, 0)<br/>      ipv6_cidr_block = optional(string, null)<br/>      protocol        = optional(number, -1)<br/>      rule_action     = optional(string, "allow")<br/>      rule_number     = number<br/>      to_port         = optional(number, null)<br/>    }))<br/>  }))</pre> | `{}` | no |
 | <a name="input_nat_gateway_mode"></a> [nat\_gateway\_mode](#input\_nat\_gateway\_mode) | The configuration mode of the NAT gateways | `string` | `"none"` | no |
