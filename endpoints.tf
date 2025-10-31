@@ -24,7 +24,7 @@ resource "aws_vpc_endpoint" "dynamodb" {
 ## Provision the security groups for the private links
 module "private_links" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "5.3.0"
+  version = "5.3.1"
   count   = length(local.enabled_endpoints) > 0 ? 1 : 0
 
   description         = "Provides the security groups for the private links access"
