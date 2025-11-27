@@ -480,6 +480,7 @@ The `terraform-docs` utility is used to generate this README. Follow the below s
 | <a name="input_enable_dns_request_logging"></a> [enable\_dns\_request\_logging](#input\_enable\_dns\_request\_logging) | Enable logging of DNS requests | `bool` | `false` | no |
 | <a name="input_enable_dynamodb_endpoint"></a> [enable\_dynamodb\_endpoint](#input\_enable\_dynamodb\_endpoint) | Enable DynamoDB VPC Gateway endpoint | `bool` | `true` | no |
 | <a name="input_enable_private_endpoints"></a> [enable\_private\_endpoints](#input\_enable\_private\_endpoints) | Indicates the network should provision private endpoints | `list(string)` | `[]` | no |
+| <a name="input_enable_public_access_block"></a> [enable\_public\_access\_block](#input\_enable\_public\_access\_block) | Enable VPC public access block should be enabled | `bool` | `false` | no |
 | <a name="input_enable_route53_resolver_rules"></a> [enable\_route53\_resolver\_rules](#input\_enable\_route53\_resolver\_rules) | Automatically associates any shared route53 resolver rules with the VPC | `bool` | `true` | no |
 | <a name="input_enable_s3_endpoint"></a> [enable\_s3\_endpoint](#input\_enable\_s3\_endpoint) | Enable S3 VPC Gateway endpoint | `bool` | `true` | no |
 | <a name="input_enable_ssm"></a> [enable\_ssm](#input\_enable\_ssm) | Indicates we should provision SSM private endpoints | `bool` | `false` | no |
@@ -492,6 +493,7 @@ The `terraform-docs` utility is used to generate this README. Follow the below s
 | <a name="input_nat_gateway_mode"></a> [nat\_gateway\_mode](#input\_nat\_gateway\_mode) | The configuration mode of the NAT gateways | `string` | `"none"` | no |
 | <a name="input_private_subnet_netmask"></a> [private\_subnet\_netmask](#input\_private\_subnet\_netmask) | The netmask for the private subnets | `number` | `0` | no |
 | <a name="input_private_subnet_tags"></a> [private\_subnet\_tags](#input\_private\_subnet\_tags) | Additional tags for the private subnets | `map(string)` | `{}` | no |
+| <a name="input_public_access_block_mode"></a> [public\_access\_block\_mode](#input\_public\_access\_block\_mode) | Indicates the mode for the VPC public access block (i.e allow-egress or allow-bidirectional) | `string` | `"ingress"` | no |
 | <a name="input_public_subnet_netmask"></a> [public\_subnet\_netmask](#input\_public\_subnet\_netmask) | The netmask for the public subnets | `number` | `0` | no |
 | <a name="input_public_subnet_tags"></a> [public\_subnet\_tags](#input\_public\_subnet\_tags) | Additional tags for the public subnets | `map(string)` | `{}` | no |
 | <a name="input_subnets"></a> [subnets](#input\_subnets) | Additional subnets to create in the network, keyed by the subnet name | `any` | `{}` | no |

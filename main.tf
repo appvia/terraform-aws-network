@@ -32,3 +32,11 @@ module "nacls" {
 
   depends_on = [module.vpc]
 }
+
+## Configure the public access block if required
+resource "aws_vpc_block_public_access_exclusion" "public_access" {
+  count = var.enable_public_access_block ? 1 : 0
+
+  vpc_id                          = module.vpc.vpc_attributes.id
+  internet_gateway_exclusion_mode = var.public_access_block_mode
+}

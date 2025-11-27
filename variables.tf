@@ -40,6 +40,18 @@ variable "enable_dns_request_logging" {
   default     = false
 }
 
+variable "enable_public_access_block" {
+  description = "Enable VPC public access block should be enabled"
+  type        = bool
+  default     = false
+}
+
+variable "public_access_block_mode" {
+  description = "Indicates the mode for the VPC public access block (i.e allow-egress or allow-bidirectional)"
+  type        = string
+  default     = "ingress"
+}
+
 variable "enable_private_endpoints" {
   description = "Indicates the network should provision private endpoints"
   type        = list(string)
