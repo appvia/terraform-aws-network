@@ -4,23 +4,5 @@
     "config:recommended",
     ":semanticCommitTypeAll(chore)",
     "schedule:earlyMondays"
-  ],
-  "fileRules": [
-    {
-      "matchFiles": [".commitlintrc.yaml"],
-      "replaceString": "https://raw.githubusercontent.com/appvia/terraform-aws-pipeline-template/main/.commitlintrc.yaml"
-    },
-    {
-      "matchFiles": [".terraform-docs.yaml"],
-      "replaceString": "https://raw.githubusercontent.com/appvia/terraform-aws-pipeline-template/main/.terraform-docs.yaml"
-    },
-    {
-      "matchFiles": ["CODE_OF_CONDUCT.md"],
-      "replaceString": "https://raw.githubusercontent.com/appvia/terraform-aws-pipeline-template/main/CODE_OF_CONDUCT.md"
-    },
-    {
-      "matchFiles": ["LICENCE"],
-      "replaceString": "https://raw.githubusercontent.com/appvia/terraform-aws-pipeline-template/main/LICENCE"
-    }
   ]
 }
