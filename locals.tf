@@ -94,5 +94,20 @@ locals {
   enabled_endpoints = concat(var.enable_private_endpoints, local.ssm_endpoints)
   ## Build the list of resolver rules to associate with the vpc
   resolver_rules = var.enable_route53_resolver_rules ? [for id in data.aws_route53_resolver_rules.current.resolver_rule_ids : id if !contains(var.exclude_route53_resolver_rules, id)] : []
+  ## A list of route53 profiles to associate with the VPC
+  route53_profiles = var.enable_route53_profiles_rules ? [for profile in data.aws_route53profiles_profiles.current.profiles : profile.id] : []
+  ## Explicit ID when discovery is off; when discovery is on, only if present in discovered profiles; otherwise auto-select when exactly one profile exists
+  route53_profile_id = (
+    var.route53_profile_id != null
+    ? (
+      !var.enable_route53_profiles_rules
+      ? var.route53_profile_id
+      : contains(local.route53_profiles, var.route53_profile_id)
+      ? var.route53_profile_id
+      : null
+    )
+    : length(local.route53_profiles) == 1
+    ? local.route53_profiles[0]
+    : null
+  )
 }
-
