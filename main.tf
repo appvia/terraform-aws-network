@@ -40,3 +40,12 @@ resource "aws_vpc_block_public_access_exclusion" "public_access" {
   vpc_id                          = module.vpc.vpc_attributes.id
   internet_gateway_exclusion_mode = var.public_access_block_mode
 }
+
+## Associate the route53 profile with the VPC if enabled
+resource "aws_route53profiles_association" "route53_profile" {
+  count = local.route53_profile_id != null ? 1 : 0
+
+  name        = format("lz-route53-association-%s", var.name)
+  profile_id  = local.route53_profile_id
+  resource_id = module.vpc.vpc_attributes.id
+}

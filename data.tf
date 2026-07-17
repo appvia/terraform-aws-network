@@ -10,3 +10,6 @@ data "aws_route53_resolver_rules" "current" {
   rule_type    = "FORWARD"
   share_status = "SHARED_WITH_ME"
 }
+
+## Find the route53 profiles shared with this account 
+data "aws_route53profiles_profiles" "current" {}

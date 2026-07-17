@@ -79,6 +79,11 @@ output "rt_attributes_by_type_by_az" {
   value       = module.vpc.rt_attributes_by_type_by_az
 }
 
+output "route53_profile_id" {
+  description = "The ID of the route53 profile if enabled"
+  value       = local.route53_profile_id
+}
+
 output "private_subnet_ids" {
   description = "The IDs of the private subnets i.e. [subnet_id, subnet_id]"
   value       = local.private_subnet_ids

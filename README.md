@@ -294,6 +294,74 @@ When using S3 as the destination, you can configure additional options:
    - Configure S3 lifecycle policies to manage log retention
    - Archive old logs to cheaper storage classes
 
+## Using Route 53 Profiles
+
+The module supports associating [Route 53 Profiles](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/profiles.html) with your VPC. Profiles centralise DNS configuration (for example, private hosted zones and resolver rules) and can be shared across accounts via AWS Resource Access Manager (RAM).
+
+When `enable_route53_profiles_rules = true` (the default), the module discovers Route 53 profiles shared with the current account. You can optionally pin a specific profile with `route53_profile_id`, or disable discovery entirely and supply an explicit ID.
+
+### Association behaviour matrix
+
+| Case | `route53_profile_id` | `enable_route53_profiles_rules` | Discovered profiles | Association | Selected profile |
+|------|----------------------|---------------------------------|---------------------|-------------|------------------|
+| a | `null` | `false` | (ignored) | none | — |
+| b | set (e.g. `rp-explicit`) | `false` | (ignored) | yes | explicit ID |
+| c | `null` | `true` | none | none | — |
+| d | `null` | `true` | exactly one | yes | discovered ID |
+| e | `null` | `true` | two or more | none | — |
+| f1 | set (e.g. `rp-a`) | `true` | includes that ID | yes | explicit ID |
+| f2 | set (e.g. `rp-missing`) | `true` | does not include that ID | none | — |
+
+Notes:
+
+- When discovery is **disabled**, `route53_profile_id` is used directly if set; discovered profiles are not consulted.
+- When discovery is **enabled** and `route53_profile_id` is set, the ID must appear in the discovered profiles or no association is created.
+- When discovery is **enabled** and `route53_profile_id` is `null`, the module auto-selects the profile only when exactly one is discovered. With zero or multiple profiles, set `route53_profile_id` explicitly to choose one.
+
+### Configuration examples
+
+```hcl
+# Default: discover shared profiles and auto-associate when exactly one exists
+module "vpc" {
+  source  = "appvia/network/aws"
+  version = "0.0.8"
+
+  # enable_route53_profiles_rules = true  # default
+  # ... other configuration ...
+}
+
+# Disable Route 53 profile association
+module "vpc" {
+  source  = "appvia/network/aws"
+  version = "0.0.8"
+
+  enable_route53_profiles_rules = false
+  # ... other configuration ...
+}
+
+# Pin a specific profile (required when multiple profiles are shared)
+module "vpc" {
+  source  = "appvia/network/aws"
+  version = "0.0.8"
+
+  enable_route53_profiles_rules = true
+  route53_profile_id            = "rp-1234567890abcdef0"
+  # ... other configuration ...
+}
+
+# Use an explicit profile ID without discovery (e.g. cross-account or pre-known ID)
+module "vpc" {
+  source  = "appvia/network/aws"
+  version = "0.0.8"
+
+  enable_route53_profiles_rules = false
+  route53_profile_id            = "rp-1234567890abcdef0"
+  # ... other configuration ...
+}
+```
+
+When a profile is associated, the module exposes its ID via the `route53_profile_id` output.
+
 ## Using Route53 Resolver Rules
 
 The module supports automatically associating shared Route53 Resolver Rules with your VPC. By default, any resolver rules shared with your account will be automatically associated. Here are some configuration examples:
@@ -481,6 +549,7 @@ The `terraform-docs` utility is used to generate this README. Follow the below s
 | <a name="input_enable_dynamodb_endpoint"></a> [enable\_dynamodb\_endpoint](#input\_enable\_dynamodb\_endpoint) | Enable DynamoDB VPC Gateway endpoint | `bool` | `true` | no |
 | <a name="input_enable_private_endpoints"></a> [enable\_private\_endpoints](#input\_enable\_private\_endpoints) | Indicates the network should provision private endpoints | `list(string)` | `[]` | no |
 | <a name="input_enable_public_access_block"></a> [enable\_public\_access\_block](#input\_enable\_public\_access\_block) | Enable VPC public access block should be enabled | `bool` | `false` | no |
+| <a name="input_enable_route53_profiles_rules"></a> [enable\_route53\_profiles\_rules](#input\_enable\_route53\_profiles\_rules) | Automatically associates shared Route 53 profiles with the VPC | `bool` | `true` | no |
 | <a name="input_enable_route53_resolver_rules"></a> [enable\_route53\_resolver\_rules](#input\_enable\_route53\_resolver\_rules) | Automatically associates any shared route53 resolver rules with the VPC | `bool` | `true` | no |
 | <a name="input_enable_s3_endpoint"></a> [enable\_s3\_endpoint](#input\_enable\_s3\_endpoint) | Enable S3 VPC Gateway endpoint | `bool` | `true` | no |
 | <a name="input_enable_ssm"></a> [enable\_ssm](#input\_enable\_ssm) | Indicates we should provision SSM private endpoints | `bool` | `false` | no |
@@ -496,6 +565,7 @@ The `terraform-docs` utility is used to generate this README. Follow the below s
 | <a name="input_public_access_block_mode"></a> [public\_access\_block\_mode](#input\_public\_access\_block\_mode) | Indicates the mode for the VPC public access block (i.e allow-egress or allow-bidirectional) | `string` | `"ingress"` | no |
 | <a name="input_public_subnet_netmask"></a> [public\_subnet\_netmask](#input\_public\_subnet\_netmask) | The netmask for the public subnets | `number` | `0` | no |
 | <a name="input_public_subnet_tags"></a> [public\_subnet\_tags](#input\_public\_subnet\_tags) | Additional tags for the public subnets | `map(string)` | `{}` | no |
+| <a name="input_route53_profile_id"></a> [route53\_profile\_id](#input\_route53\_profile\_id) | Optional Route 53 profile ID to associate with the VPC. When profile discovery is disabled, this ID is used directly. When discovery is enabled, this ID must appear in the discovered profiles. | `string` | `null` | no |
 | <a name="input_subnets"></a> [subnets](#input\_subnets) | Additional subnets to create in the network, keyed by the subnet name | `any` | `{}` | no |
 | <a name="input_transit_gateway_id"></a> [transit\_gateway\_id](#input\_transit\_gateway\_id) | If enabled, and not lookup is disabled, the transit gateway id to connect to | `string` | `null` | no |
 | <a name="input_transit_gateway_routes"></a> [transit\_gateway\_routes](#input\_transit\_gateway\_routes) | If enabled, this is the cidr block to route down the transit gateway | `map(string)` | <pre>{<br/>  "private": "10.0.0.0/8"<br/>}</pre> | no |
@@ -523,6 +593,7 @@ The `terraform-docs` utility is used to generate this README. Follow the below s
 | <a name="output_public_subnet_cidrs"></a> [public\_subnet\_cidrs](#output\_public\_subnet\_cidrs) | A list of the CIDRs for the public subnets i.e. [subnet\_cidr, subnet\_cidr] |
 | <a name="output_public_subnet_id_by_az"></a> [public\_subnet\_id\_by\_az](#output\_public\_subnet\_id\_by\_az) | A map of availability zone to subnet id of the public subnets i.e. eu-west-2a => subnet\_id |
 | <a name="output_public_subnet_ids"></a> [public\_subnet\_ids](#output\_public\_subnet\_ids) | The IDs of the public subnets i.e. [subnet\_id, subnet\_id] |
+| <a name="output_route53_profile_id"></a> [route53\_profile\_id](#output\_route53\_profile\_id) | The ID of the route53 profile if enabled |
 | <a name="output_rt_attributes_by_type_by_az"></a> [rt\_attributes\_by\_type\_by\_az](#output\_rt\_attributes\_by\_type\_by\_az) | The attributes of the route tables (see aws-ia/vpc/aws for details) |
 | <a name="output_subnets"></a> [subnets](#output\_subnets) | The subnets created by the module |
 | <a name="output_transit_gateway_attachment_id"></a> [transit\_gateway\_attachment\_id](#output\_transit\_gateway\_attachment\_id) | The ID of the transit gateway attachment if enabled |

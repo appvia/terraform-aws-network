@@ -64,6 +64,12 @@ variable "enable_route53_resolver_rules" {
   default     = true
 }
 
+variable "enable_route53_profiles_rules" {
+  description = "Automatically associates shared Route 53 profiles with the VPC"
+  type        = bool
+  default     = true
+}
+
 variable "enable_s3_endpoint" {
   description = "Enable S3 VPC Gateway endpoint"
   type        = bool
@@ -211,6 +217,12 @@ variable "public_subnet_tags" {
   description = "Additional tags for the public subnets"
   type        = map(string)
   default     = {}
+}
+
+variable "route53_profile_id" {
+  description = "Optional Route 53 profile ID to associate with the VPC. When profile discovery is disabled, this ID is used directly. When discovery is enabled, this ID must appear in the discovered profiles."
+  type        = string
+  default     = null
 }
 
 variable "subnets" {
