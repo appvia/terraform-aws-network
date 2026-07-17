@@ -64,12 +64,6 @@ variable "enable_route53_resolver_rules" {
   default     = true
 }
 
-variable "enable_route53_profiles_rules" {
-  description = "Automatically associates shared Route 53 profiles with the VPC"
-  type        = bool
-  default     = true
-}
-
 variable "enable_s3_endpoint" {
   description = "Enable S3 VPC Gateway endpoint"
   type        = bool
@@ -131,7 +125,7 @@ variable "flow_logs" {
     error_message = "The destination type must be s3, kinesis-data-firehose, cloud-watch-logs"
   }
 
-  # Ensure valiadate in the log format is either plain-text or parquet
+  # Ensure validate in the log format is either plain-text or parquet
   validation {
     condition     = contains(["plain-text", "parquet"], try(var.flow_logs.log_format, "plain-text"))
     error_message = "The log format must be plain-text or parquet"
@@ -219,8 +213,8 @@ variable "public_subnet_tags" {
   default     = {}
 }
 
-variable "route53_profile_id" {
-  description = "Optional Route 53 profile ID to associate with the VPC. When profile discovery is disabled, this ID is used directly. When discovery is enabled, this ID must appear in the discovered profiles."
+variable "route53_profile_name" {
+  description = "Optional Route 53 profile name to associate with the VPC. The module looks up this name in discovered shared profiles and associates the matching profile ID; if unset or not found, no association is created."
   type        = string
   default     = null
 }

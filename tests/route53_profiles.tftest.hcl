@@ -36,93 +36,7 @@ mock_provider "aws" {
   }
 }
 
-run "a_no_profile_discovery_disabled" {
-  command = plan
-
-  variables {
-    name                          = "test-vpc"
-    private_subnet_netmask        = 24
-    enable_route53_profiles_rules = false
-    route53_profile_id            = null
-    enable_route53_resolver_rules = false
-    tags = {
-      Environment = "test"
-      GitRepo     = "https://github.com/appvia/terraform-aws-network"
-      Terraform   = "true"
-    }
-  }
-
-  assert {
-    condition     = length(aws_route53profiles_association.route53_profile) == 0
-    error_message = "Case a: expected no route53 profile association"
-  }
-
-  assert {
-    condition     = output.route53_profile_id == null
-    error_message = "Case a: expected route53_profile_id output to be null"
-  }
-}
-
-run "b_explicit_profile_discovery_disabled" {
-  command = plan
-
-  variables {
-    name                          = "test-vpc"
-    private_subnet_netmask        = 24
-    enable_route53_profiles_rules = false
-    route53_profile_id            = "rp-explicit"
-    enable_route53_resolver_rules = false
-    tags = {
-      Environment = "test"
-      GitRepo     = "https://github.com/appvia/terraform-aws-network"
-      Terraform   = "true"
-    }
-  }
-
-  assert {
-    condition     = length(aws_route53profiles_association.route53_profile) == 1
-    error_message = "Case b: expected route53 profile association"
-  }
-
-  assert {
-    condition     = aws_route53profiles_association.route53_profile[0].profile_id == "rp-explicit"
-    error_message = "Case b: association profile_id should be rp-explicit"
-  }
-
-  assert {
-    condition     = output.route53_profile_id == "rp-explicit"
-    error_message = "Case b: expected route53_profile_id output to be rp-explicit"
-  }
-}
-
-run "c_discovery_enabled_no_profiles" {
-  command = plan
-
-  variables {
-    name                          = "test-vpc"
-    private_subnet_netmask        = 24
-    enable_route53_profiles_rules = true
-    route53_profile_id            = null
-    enable_route53_resolver_rules = false
-    tags = {
-      Environment = "test"
-      GitRepo     = "https://github.com/appvia/terraform-aws-network"
-      Terraform   = "true"
-    }
-  }
-
-  assert {
-    condition     = length(aws_route53profiles_association.route53_profile) == 0
-    error_message = "Case c: expected no association when no profiles discovered"
-  }
-
-  assert {
-    condition     = output.route53_profile_id == null
-    error_message = "Case c: expected route53_profile_id output to be null"
-  }
-}
-
-run "d_discovery_enabled_one_profile" {
+run "a_no_name" {
   command = plan
 
   override_data {
@@ -142,8 +56,53 @@ run "d_discovery_enabled_one_profile" {
   variables {
     name                          = "test-vpc"
     private_subnet_netmask        = 24
-    enable_route53_profiles_rules = true
-    route53_profile_id            = null
+    route53_profile_name          = null
+    enable_route53_resolver_rules = false
+    tags = {
+      Environment = "test"
+      GitRepo     = "https://github.com/appvia/terraform-aws-network"
+      Terraform   = "true"
+    }
+  }
+
+  assert {
+    condition     = length(aws_route53profiles_association.route53_profile) == 0
+    error_message = "Case a: expected no association when profile name is unset"
+  }
+
+  assert {
+    condition     = output.route53_profile_id == null
+    error_message = "Case a: expected route53_profile_id output to be null"
+  }
+}
+
+run "b_name_found" {
+  command = plan
+
+  override_data {
+    target = data.aws_route53profiles_profiles.current
+    values = {
+      profiles = [
+        {
+          id           = "rp-one"
+          arn          = "arn:aws:route53profiles:eu-west-1:1234567890:profile/rp-one"
+          name         = "one"
+          share_status = "SHARED_WITH_ME"
+        },
+        {
+          id           = "rp-two"
+          arn          = "arn:aws:route53profiles:eu-west-1:1234567890:profile/rp-two"
+          name         = "two"
+          share_status = "SHARED_WITH_ME"
+        }
+      ]
+    }
+  }
+
+  variables {
+    name                          = "test-vpc"
+    private_subnet_netmask        = 24
+    route53_profile_name          = "one"
     enable_route53_resolver_rules = false
     tags = {
       Environment = "test"
@@ -154,21 +113,21 @@ run "d_discovery_enabled_one_profile" {
 
   assert {
     condition     = length(aws_route53profiles_association.route53_profile) == 1
-    error_message = "Case d: expected association when exactly one profile is discovered"
+    error_message = "Case b: expected association when profile name is found"
   }
 
   assert {
     condition     = aws_route53profiles_association.route53_profile[0].profile_id == "rp-one"
-    error_message = "Case d: association profile_id should be rp-one"
+    error_message = "Case b: association profile_id should be rp-one"
   }
 
   assert {
     condition     = output.route53_profile_id == "rp-one"
-    error_message = "Case d: expected route53_profile_id output to be rp-one"
+    error_message = "Case b: expected route53_profile_id output to be rp-one"
   }
 }
 
-run "e_discovery_enabled_multiple_profiles" {
+run "c_name_not_found" {
   command = plan
 
   override_data {
@@ -194,8 +153,7 @@ run "e_discovery_enabled_multiple_profiles" {
   variables {
     name                          = "test-vpc"
     private_subnet_netmask        = 24
-    enable_route53_profiles_rules = true
-    route53_profile_id            = null
+    route53_profile_name          = "missing"
     enable_route53_resolver_rules = false
     tags = {
       Environment = "test"
@@ -206,95 +164,22 @@ run "e_discovery_enabled_multiple_profiles" {
 
   assert {
     condition     = length(aws_route53profiles_association.route53_profile) == 0
-    error_message = "Case e: expected no association when multiple profiles are discovered"
+    error_message = "Case c: expected no association when profile name is not found"
   }
 
   assert {
     condition     = output.route53_profile_id == null
-    error_message = "Case e: expected route53_profile_id output to be null"
+    error_message = "Case c: expected route53_profile_id output to be null"
   }
 }
 
-run "f1_explicit_profile_found_among_multiple" {
+run "d_name_not_found_empty_profiles" {
   command = plan
-
-  override_data {
-    target = data.aws_route53profiles_profiles.current
-    values = {
-      profiles = [
-        {
-          id           = "rp-a"
-          arn          = "arn:aws:route53profiles:eu-west-1:1234567890:profile/rp-a"
-          name         = "a"
-          share_status = "SHARED_WITH_ME"
-        },
-        {
-          id           = "rp-b"
-          arn          = "arn:aws:route53profiles:eu-west-1:1234567890:profile/rp-b"
-          name         = "b"
-          share_status = "SHARED_WITH_ME"
-        }
-      ]
-    }
-  }
 
   variables {
     name                          = "test-vpc"
     private_subnet_netmask        = 24
-    enable_route53_profiles_rules = true
-    route53_profile_id            = "rp-a"
-    enable_route53_resolver_rules = false
-    tags = {
-      Environment = "test"
-      GitRepo     = "https://github.com/appvia/terraform-aws-network"
-      Terraform   = "true"
-    }
-  }
-
-  assert {
-    condition     = length(aws_route53profiles_association.route53_profile) == 1
-    error_message = "Case f1: expected association when explicit profile exists in discovered list"
-  }
-
-  assert {
-    condition     = aws_route53profiles_association.route53_profile[0].profile_id == "rp-a"
-    error_message = "Case f1: association profile_id should be rp-a"
-  }
-
-  assert {
-    condition     = output.route53_profile_id == "rp-a"
-    error_message = "Case f1: expected route53_profile_id output to be rp-a"
-  }
-}
-
-run "f2_explicit_profile_not_found_among_multiple" {
-  command = plan
-
-  override_data {
-    target = data.aws_route53profiles_profiles.current
-    values = {
-      profiles = [
-        {
-          id           = "rp-a"
-          arn          = "arn:aws:route53profiles:eu-west-1:1234567890:profile/rp-a"
-          name         = "a"
-          share_status = "SHARED_WITH_ME"
-        },
-        {
-          id           = "rp-b"
-          arn          = "arn:aws:route53profiles:eu-west-1:1234567890:profile/rp-b"
-          name         = "b"
-          share_status = "SHARED_WITH_ME"
-        }
-      ]
-    }
-  }
-
-  variables {
-    name                          = "test-vpc"
-    private_subnet_netmask        = 24
-    enable_route53_profiles_rules = true
-    route53_profile_id            = "rp-missing"
+    route53_profile_name          = "one"
     enable_route53_resolver_rules = false
     tags = {
       Environment = "test"
@@ -305,11 +190,11 @@ run "f2_explicit_profile_not_found_among_multiple" {
 
   assert {
     condition     = length(aws_route53profiles_association.route53_profile) == 0
-    error_message = "Case f2: expected no association when explicit profile is not in discovered list"
+    error_message = "Case d: expected no association when no profiles are discovered"
   }
 
   assert {
     condition     = output.route53_profile_id == null
-    error_message = "Case f2: expected route53_profile_id output to be null"
+    error_message = "Case d: expected route53_profile_id output to be null"
   }
 }

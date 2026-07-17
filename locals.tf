@@ -75,7 +75,7 @@ locals {
   transit_route_table_ids = local.enable_transit_gateway ? [for k, x in module.vpc.rt_attributes_by_type_by_az.transit_gateway : x.id] : []
   # The routing tables for the private subnets
   private_route_table_ids = [for k, x in module.vpc.rt_attributes_by_type_by_az.private : x.id]
-  # The transgit gateway route table ids
+  # The transit gateway route table ids
   public_route_table_ids = var.public_subnet_netmask > 0 ? [for k, x in module.vpc.rt_attributes_by_type_by_az.public : x.id] : []
   # A map of the route table ids for the transit gateway by az
   transit_route_table_by_az = local.enable_transit_gateway ? { for k, v in module.vpc.rt_attributes_by_type_by_az.transit_gateway : k => v.id } : {}
@@ -90,24 +90,14 @@ locals {
 
   # A list of the private endpoints to enable ssm
   ssm_endpoints = var.enable_ssm ? ["ssmmessages", "ssm", "ec2messages"] : []
-  # enabled_endpotints is a list of all the private endpoints to enable
+  # enabled_endpoints is a list of all the private endpoints to enable
   enabled_endpoints = concat(var.enable_private_endpoints, local.ssm_endpoints)
   ## Build the list of resolver rules to associate with the vpc
   resolver_rules = var.enable_route53_resolver_rules ? [for id in data.aws_route53_resolver_rules.current.resolver_rule_ids : id if !contains(var.exclude_route53_resolver_rules, id)] : []
-  ## A list of route53 profiles to associate with the VPC
-  route53_profiles = var.enable_route53_profiles_rules ? [for profile in data.aws_route53profiles_profiles.current.profiles : profile.id] : []
-  ## Explicit ID when discovery is off; when discovery is on, only if present in discovered profiles; otherwise auto-select when exactly one profile exists
-  route53_profile_id = (
-    var.route53_profile_id != null
-    ? (
-      !var.enable_route53_profiles_rules
-      ? var.route53_profile_id
-      : contains(local.route53_profiles, var.route53_profile_id)
-      ? var.route53_profile_id
-      : null
-    )
-    : length(local.route53_profiles) == 1
-    ? local.route53_profiles[0]
-    : null
-  )
+  ## Discovered Route 53 profiles indexed by name => id
+  route53_profiles = {
+    for profile in data.aws_route53profiles_profiles.current.profiles : profile.name => profile.id
+  }
+  ## Resolve the profile ID by name; associate only when the name exists in the discovered map
+  route53_profile_id = var.route53_profile_name != null ? try(local.route53_profiles[var.route53_profile_name], null) : null
 }
