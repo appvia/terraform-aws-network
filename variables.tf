@@ -61,7 +61,7 @@ variable "enable_private_endpoints" {
 variable "enable_route53_resolver_rules" {
   description = "Automatically associates any shared route53 resolver rules with the VPC"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "enable_s3_endpoint" {
