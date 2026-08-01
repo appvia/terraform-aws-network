@@ -55,6 +55,8 @@ locals {
 
   # A list of all the private subnets cidr blocks
   private_subnet_cidrs = [for k, x in module.vpc.private_subnet_attributes_by_az : x.cidr_block if startswith(k, "private/")]
+  # The number of private subnets, known at plan time (one per az when enabled)
+  private_subnet_count = var.private_subnet_netmask > 0 ? var.availability_zones : 0
   # A map of private subnet id to cidr block
   private_subnet_cidr_by_id = { for k, x in module.vpc.private_subnet_attributes_by_az : x.id => x.cidr_block if startswith(k, "private/") }
   # A map of az to private subnet id
