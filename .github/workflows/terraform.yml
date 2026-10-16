@@ -14,19 +14,19 @@ permissions:
 
 jobs:
   module-validation:
-    uses: appvia/appvia-cicd-workflows/.github/workflows/terraform-module-validation.yml@9f815b35dd18819f0854c52ee8cafd249b28681c # main
+    uses: appvia/appvia-cicd-workflows/.github/workflows/terraform-module-validation.yml@b2042fe251447efbe801c4ad02e6433c5304d16c # main
     name: Module Validation
     with:
       working-directory: .
 
   shared-module-validation:
-    uses: appvia/appvia-cicd-workflows/.github/workflows/terraform-module-validation.yml@9f815b35dd18819f0854c52ee8cafd249b28681c # main
+    uses: appvia/appvia-cicd-workflows/.github/workflows/terraform-module-validation.yml@b2042fe251447efbe801c4ad02e6433c5304d16c # main
     name: Shared Module Validation
     with:
       working-directory: modules/shared
 
   nacls-validation:
-    uses: appvia/appvia-cicd-workflows/.github/workflows/terraform-module-validation.yml@9f815b35dd18819f0854c52ee8cafd249b28681c # main
+    uses: appvia/appvia-cicd-workflows/.github/workflows/terraform-module-validation.yml@b2042fe251447efbe801c4ad02e6433c5304d16c # main
     name: NACLS Validation
     with:
       working-directory: modules/nacls
