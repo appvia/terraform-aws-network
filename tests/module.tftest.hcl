@@ -34,9 +34,10 @@ run "basic" {
   command = plan
 
   variables {
-    name                   = "test-vpc"
-    enable_ssm             = true
-    private_subnet_netmask = 24
+    name                          = "test-vpc"
+    enable_ssm                    = true
+    enable_route53_resolver_rules = true
+    private_subnet_netmask        = 24
     tags = {
       "Environment" = "test"
       "GitRepo"     = "https://github.com/appvia/terraform-aws-network"
@@ -92,5 +93,24 @@ run "basic" {
   assert {
     condition     = aws_route53_resolver_rule_association.vpc_associations["rslvr-rr-1234567890"].resolver_rule_id == "rslvr-rr-1234567890"
     error_message = "resolver rule association should have the correct values"
+  }
+}
+
+run "resolver_rules_disabled_by_default" {
+  command = plan
+
+  variables {
+    name                   = "test-vpc"
+    private_subnet_netmask = 24
+    tags = {
+      "Environment" = "test"
+      "GitRepo"     = "https://github.com/appvia/terraform-aws-network"
+      "Terraform"   = "true"
+    }
+  }
+
+  assert {
+    condition     = length(aws_route53_resolver_rule_association.vpc_associations) == 0
+    error_message = "resolver rules should not be associated by default"
   }
 }
